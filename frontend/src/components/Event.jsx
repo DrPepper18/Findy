@@ -49,22 +49,19 @@ export const Event = ({ event }) => {
     };
 
     return (
-        <div className="Event" ref={useRef('CurrentEvents')} style={{ padding: '0 20px 0 20px' }}>
-            <div style={{ display: 'inline-block' }}>
-                <h2>{event.name}</h2>
-                <p style={{ marginTop: '-10px' }}>{event.host}</p>
-                <h5 style={{ marginTop: '-10px' }}>
-                    {event.date}
-                </h5>
+        <div className="Event" ref={useRef('CurrentEvents')}>
+            <div>
+                <h2 style={{marginTop: '5px'}}>{event.Name}</h2>
+                {/* <p style={{ marginTop: '-10px' }}>{event.host}</p> */}
+                <h4 style={{ marginTop: '-10px' }}>
+                    {new Date(event.DateTime).toLocaleDateString('ru-RU')} {event.MinAge} - {event.MaxAge} лет
+                </h4>
             </div>
-            <div style={{ display: 'inline-block', position: 'absolute', right: '0', marginRight: '20px' }}>
-                {joined ? (
-                    <span>Вы добавлены</span>
-                ) : (
+            <div>
+                {joined ? (<span>Вы добавлены</span>) : (
                     <input type="button" value="Я приду" className="ToGoButton" onClick={handleJoin}></input>
                 )}
-                {console.log(event.capacity > 0)}
-                {event.capacity > 0 ? <h5>{event.members_count}/{event.capacity}</h5> : <h5>---</h5>}
+                <h5 style={{'margin-top': 0, marginLeft: '4%'}}>до {event.MaxMembers} человек</h5>
             </div>
         </div>
     )

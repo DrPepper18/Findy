@@ -9,9 +9,10 @@ const MainScreen = () => (
         <Header/>
         <main>
             {/*document.cookie == '' ? window.location.href = '/login' : ''*/}
-            <div style={{display: 'inline-block', width: '100%'}}>
-                <YandexMap/>
+            <div style={{display: 'flex', width: '100%'}}>
                 <EventsList/>
+                <YandexMap/>
+                
             </div>
         </main>
     </div>

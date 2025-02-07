@@ -7,8 +7,8 @@
     background-position: left;    
     text-align: right;
     padding: 10px;
-
+    box-sizing: border-box;
 }
-.App {
+/* .App {
     padding: 0 30px 0 20px;
-}
+} */

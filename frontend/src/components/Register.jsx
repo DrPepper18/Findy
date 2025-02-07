@@ -33,7 +33,6 @@ const RegScreen = () => {
             return;
         }
         setEmailError('');
-
         const user = {
             name: nickname,
             email: email,
@@ -43,7 +42,7 @@ const RegScreen = () => {
 
         console.log(JSON.stringify(user))
         try {
-            const response = await fetch(config.Host_url + 'users', {
+            const response = await fetch(config.Host_url + 'auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -1,7 +1,8 @@
+import { useState, useEffect } from "react";
 import {EventObj, Event} from "./Event";
 import config from '../config';
 const EventsList = () => {
-
+    const [events, setEvents] = useState([]); // State to hold events
 
     function NewEventFromJson(json) {
         return new EventObj(
@@ -18,24 +19,33 @@ const EventsList = () => {
         )
     }
 
-    const getEvents = () => {
+    const getEvents = async () => {
         try {
-            let xhr = new XMLHttpRequest();
-            let url = config.Host_url + 'events';
-            xhr.open("GET", url, true);
-            xhr.send();
-            return JSON.parse(xhr.responseText).map((event) => NewEventFromJson(event));
+            let response = await fetch(config.Host_url + 'events');
+            if (!response.ok) {
+                throw new Error(`Request failed with status: ${response.status}`);
+            }
+            let data = await response.json();
+            return data.events || [];
         } catch (error) {
             console.error('Error fetching events:', error);
             return [];
         }
     }
-    let events = getEvents();
+   // Fetch events on component mount
+   useEffect(() => {
+    const fetchEvents = async () => {
+        const eventsData = await getEvents();
+        setEvents(eventsData); // Set state after fetching
+    };
+    fetchEvents();
+}, []); // Empty dependency array means it runs only once on mount
+    console.log(events);
     return (
         <div id="CurrentEvents" style={{}}>
             {events.length > 0 ? 
                 events.map((event, index) => (
-                    <Event event={event}/>
+                    <Event key={index} event={event}/>
                 )) :
                 <h2 style={{textAlign: 'center'}}>
                     Здесь ничего нет, будь первым

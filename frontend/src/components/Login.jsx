@@ -6,15 +6,11 @@ import { redirect } from "react-router-dom";
 
 const LoginCheck = async (email, password, setError) => {
         try {
-                const response = await axios.post(config.Host_url + 'auth/login', {
-                        email,
-                        password
-                }, {
-                        headers: {
-                                'Content-Type': 'application/json'
-                        }
-                });
-
+                const response = await axios.post(config.Host_url + 'auth/login', 
+                        {email, password}, 
+                        {headers: {'Content-Type': 'application/json'}}
+                );
+                console.log(response);
                 // Успешный вход
                 document.cookie = `jwt=${response.data.token}; path=/;`;
                 // Перенаправление на главную страницу или другую страницу
@@ -43,7 +39,7 @@ const LoginScreen = () => {
                     <h1>Findy. Log in</h1>
                     <input
                         style={{border: '1px black solid', width: '95%'}}
-                        placeholder="Nickname"
+                        placeholder="E-mail"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
