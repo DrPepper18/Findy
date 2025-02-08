@@ -4,8 +4,8 @@ header{
     font-family: Arial;
 }
 #map{
-    width: 60%;
-    height: 87vh;
+    width: 65%;
+    height: 89vh;
 }
 #Profile{
     height: 91vh;
@@ -22,8 +22,8 @@ header{
     padding: 10px;
 }
 #CurrentEvents{
-    width: 40%;
-    height: 87vh;
+    width: 35%;
+    height: 89vh;
     background-color:rgb(246, 246, 246);
     border-left: 1px black solid;
     border-right: 1px black solid;
@@ -96,4 +96,7 @@ header{
 .GeoSuggest:hover {
     cursor: pointer;
     background-color: grey;
+}
+.placemark_element {
+    border: black 1px solid;
 }

@@ -8,11 +8,10 @@ const MainScreen = () => (
     <div className="App">
         <Header/>
         <main>
-            {/*document.cookie == '' ? window.location.href = '/login' : ''*/}
+            {document.cookie ? '' : window.location.href = '/login'}
             <div style={{display: 'flex', width: '100%'}}>
                 <EventsList/>
                 <YandexMap/>
-                
             </div>
         </main>
     </div>

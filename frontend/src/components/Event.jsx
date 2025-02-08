@@ -61,7 +61,7 @@ export const Event = ({ event }) => {
                 {joined ? (<span>Вы добавлены</span>) : (
                     <input type="button" value="Я приду" className="ToGoButton" onClick={handleJoin}></input>
                 )}
-                <h5 style={{'margin-top': 0, marginLeft: '4%'}}>до {event.MaxMembers} человек</h5>
+                <h5 style={{marginTop: 0, marginLeft: '4%'}}>до {event.MaxMembers} человек</h5>
             </div>
         </div>
     )
