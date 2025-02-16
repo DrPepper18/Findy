@@ -32,14 +32,14 @@ const EventsList = () => {
             return [];
         }
     }
-   // Fetch events on component mount
-   useEffect(() => {
-    const fetchEvents = async () => {
-        const eventsData = await getEvents();
-        setEvents(eventsData); // Set state after fetching
-    };
-    fetchEvents();
-}, []); // Empty dependency array means it runs only once on mount
+    // Fetch events on component mount
+    useEffect(() => {
+        const fetchEvents = async () => {
+            const eventsData = await getEvents();
+            setEvents(eventsData); // Set state after fetching
+        };
+        fetchEvents();
+    }, []); // Empty dependency array means it runs only once on mount
     console.log(events);
     return (
         <div id="CurrentEvents" style={{}}>

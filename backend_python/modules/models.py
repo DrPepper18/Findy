@@ -20,7 +20,7 @@ class User(Base):
 
 class Event(Base):
     __tablename__ = "events"
-    ID = Column(BigInteger(), primary_key=True)
+    ID = Column(BigInteger(), primary_key=True, autoincrement=True)
     Name = Column(String())
     Latitude = Column(Float())
     Longitude = Column(Float())
