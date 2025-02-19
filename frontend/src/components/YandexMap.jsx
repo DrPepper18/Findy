@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client'; // Import ReactDOM for rendering
 import NewEventForm from './NewEvent';
 import config from '../config';
-const API_KEY = '6997c194-93fd-44c8-89ce-8639d5bcd0c1';
 
 const getEvents = async () => {
     try {
@@ -20,6 +19,10 @@ const getEvents = async () => {
 let lastCoord = null;
 const YandexMap = () => {
     useEffect(() => {
+        const get_API_KEY = async () => {
+            let response = await fetch(config.Host_url + 'yandexmap');
+            return response.api_key;
+        }
         const loadScript = (url) => {
             return new Promise((resolve, reject) => {
                 const script = document.createElement('script');
@@ -32,6 +35,7 @@ const YandexMap = () => {
         };
         
         const initMap = async () => {
+            const API_KEY = await get_API_KEY();
             await loadScript(`https://api-maps.yandex.ru/2.1/?apikey=${API_KEY}&lang=ru_RU`);
             window.ymaps.ready(async () => {
                 const map = new window.ymaps.Map('map', {
@@ -39,42 +43,46 @@ const YandexMap = () => {
                     zoom: 10
                 });
                 const NewEventAdd = async () => {
-                    let name = document.getElementById("name_input").value;
-                    let date = document.getElementById("date_input").value;
-                    let time = document.getElementById("time_input").value;
-                    let capacity = document.getElementById("capacity_input").value;
-                    if (!(name && date && time)) {
+                    let name = document.getElementById("name_input");
+                    let date = document.getElementById("date_input");
+                    let time = document.getElementById("time_input");
+                    let capacity = document.getElementById("capacity_input");
+                    if (!(name.value && date.value && time.value)) {
                         alert("Введите все данные");
                     } else {
+                        let parent = document.getElementById("NewEventForm");
+                        parent.innerHTML = '<h3>Событие создано!</h3>';
+
                         map.geoObjects.add(
                             new window.ymaps.Placemark(
                             lastCoord, 
                             {
-                                balloonContentHeader: name,
+                                balloonContentHeader: name.value,
                                 balloonContentBody: `
-                                    <p>${new Date(date).toLocaleDateString('ru-RU')}</p>
+                                    <p>${new Date(date.value).toLocaleDateString('ru-RU')}</p>
                                     <input type="button" class="ToGoButton" value="Я приду!"></input>
                                 `,
-                                balloonContentFooter: `${0}-${9999} лет, до ${capacity} человек`,
-                                hintContent: name, 
+                                balloonContentFooter: `${0}-${9999} лет, до ${capacity.value} человек`,
+                                hintContent: name.value, 
                             })
                         )
+
+                        const response = await fetch(config.Host_url + 'events', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                "name": name.value, 
+                                "lat": lastCoord[0], 
+                                "lon": lastCoord[1],
+                                "date": date.value,
+                                "capacity": capacity.value,
+                                "minage": 0, 
+                                "maxage": 9999
+                            })
+                        });
                     }
-                    const response = await fetch(config.Host_url + 'events', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            "name": name, 
-                            "lat": lastCoord[0], 
-                            "lon": lastCoord[1],
-                            "date": date,
-                            "capacity": capacity,
-                            "minage": 0, 
-                            "maxage": 9999
-                        })
-                    });
                 };
                 var dots = [];
                 let events = await getEvents();
@@ -106,13 +114,13 @@ const YandexMap = () => {
                     lastPlacemark = new window.ymaps.Placemark(coord, {
                         balloonContentHeader: "<h2>Новое событие</h2>",
                         balloonContentBody: `
-                        <div style="width: 250px;">
+                        <div id="NewEventForm" style="width: 250px;">
                             <input
                                 class="placemark_element"
                                 id="name_input"
                                 placeholder="Название"
                             />
-                            <div style="display: flex;">
+                            <div id="datetimeDiv" style="display: flex;">
                                 <input
                                     class="placemark_element"
                                     id="date_input"
@@ -125,14 +133,12 @@ const YandexMap = () => {
                                     type="time"
                                 />
                             </div>
-                            <div style="display: flex;">
+                            <div id="capacityDiv" style="display: flex;">
                                 <input
                                     class="placemark_element"
                                     id="capacity_input"
                                     type="number"
-                                    min="1"
-                                    max="16"
-                                    value="5"
+                                    min="1" max="16" value="5"
                                 />
                                 <h3>человек</h3>
                             </div>
@@ -151,6 +157,9 @@ const YandexMap = () => {
                     map.events.add("balloonopen", function (e) {
                         setTimeout(() => {
                             try{
+                                const datePicker = document.getElementById('date_input');
+                                const today = new Date().toISOString().split('T')[0]; // Получаем текущую дату в формате YYYY-MM-DD
+                                datePicker.setAttribute('min', today);
                                 document.getElementById("newEventButton").addEventListener("click", NewEventAdd);
                             } catch {
                                 console.log("Failed to find the button");
