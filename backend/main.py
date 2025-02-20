@@ -1,4 +1,4 @@
-from modules.cors import *
+from modules.routes import *
 from modules.models import *
 from modules.database import *
 import asyncio
@@ -6,7 +6,7 @@ import uvicorn
 
 
 async def startup():
-    await init_db()  # Initialize the DB before starting Flask
+    await init_db()  # Initialize the DB before starting FastAPI
 
 if __name__ == "__main__":
     asyncio.run(startup())
