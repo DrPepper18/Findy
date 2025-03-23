@@ -1,5 +1,0 @@
-DATABASE_URL=postgresql+asyncpg://postgres:vaaaprooosy@localhost:5432/findy
-SERVER_ADRESS=0.0.0.0:8000
-TOKEN_ALG=HS256
-SECRET_TOKEN=CyWk60aOvsIwrlMnWw7yxBqSn+fDe4NPIEVIlbL+sjs
-YANDEX_API=6997c194-93fd-44c8-89ce-8639d5bcd0c1
