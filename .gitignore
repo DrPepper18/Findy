@@ -22,4 +22,12 @@
 # Go workspace file
 go.work
 go.work.sum
-/backend/.vscode/
+/backend_go/.vscode/
+
+# Python shit
+venv
+*.pyc
+__pycache__
+
+# Other shit
+.back_env
