@@ -1,9 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from .services import *
-from .config import YANDEX_API
-
+from services.services import *
+from config import YANDEX_API
+from crypt_module import *
 
 app = FastAPI()
 app.add_middleware(

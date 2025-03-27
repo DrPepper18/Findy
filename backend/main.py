@@ -1,6 +1,5 @@
-from modules.routes import *
-from modules.models import *
-from modules.database import *
+from routes.routes import *
+from models.database import *
 import asyncio
 import uvicorn
 

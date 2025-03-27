@@ -1,4 +1,4 @@
-from .config import SECRET_TOKEN
+from config import SECRET_TOKEN
 import jwt
 import bcrypt
 

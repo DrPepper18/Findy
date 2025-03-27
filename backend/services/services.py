@@ -1,6 +1,6 @@
-from .models import *
-from .database import *
-from .crypt import *
+from models.models import *
+from models.database import *
+from crypt_module import *
 from datetime import datetime
 
 async def register_user(email: str, passwordhash: str, name: str) -> str:
