@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './styles/App.css';
 import {RegScreen} from "./components/Register";
 import {LoginScreen} from "./components/Login";
 import MainScreen from "./components/MainPage"

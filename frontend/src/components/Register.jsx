@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Cookies from 'js-cookie';
-import '../RegScreen.css';
+import '../styles/RegScreen.css';
 import config from "../config";
 
 const RegScreen = () => {
