@@ -16,13 +16,14 @@ const getEvents = async () => {
         return [];
     }
 };
+const get_API_KEY = async () => {
+    let response = await fetch(config.Host_url + 'yandexmap');
+    let data = await response.json();
+    return data.api_key || "";
+}
 let lastCoord = null;
-const YandexMap = () => {
+const YandexMap = ({events}) => {
     useEffect(() => {
-        const get_API_KEY = async () => {
-            let response = await fetch(config.Host_url + 'yandexmap');
-            return response.api_key;
-        }
         const loadScript = (url) => {
             return new Promise((resolve, reject) => {
                 const script = document.createElement('script');
@@ -67,19 +68,17 @@ const YandexMap = () => {
                             })
                         )
 
-                        const response = await fetch(config.Host_url + 'events', {
+                        await fetch(config.Host_url + 'events', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
                                 "name": name.value, 
-                                "lat": lastCoord[0], 
-                                "lon": lastCoord[1],
+                                "lat": lastCoord[0], "lon": lastCoord[1],
                                 "date": date.value,
                                 "capacity": capacity.value,
-                                "minage": 0, 
-                                "maxage": 9999
+                                "minage": 0, "maxage": 9999
                             })
                         });
                     }

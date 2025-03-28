@@ -1,4 +1,4 @@
-import {EventObj, Event} from "./Event";
+import {Event} from "./Event";
 const EventsList = ({events}) => {
     return (
         <div id="CurrentEvents" style={{}}>
