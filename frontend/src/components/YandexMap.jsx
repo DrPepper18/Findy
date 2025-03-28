@@ -1,21 +1,8 @@
-import React, { useEffect } from 'react';
-// import ReactDOM from 'react-dom/client'; // Import ReactDOM for rendering
+import React, { useEffect, useRef } from 'react';
 import NewEventForm from './NewEvent';
 import config from '../config';
 
-const getEvents = async () => {
-    try {
-        let response = await fetch(config.Host_url + 'events');
-        if (!response.ok) {
-            throw new Error(`Request failed with status: ${response.status}`);
-        }
-        let data = await response.json();
-        return data.events || []; // Ensure it's always an array
-    } catch (error) {
-        console.error('Error fetching events:', error);
-        return [];
-    }
-};
+
 const get_API_KEY = async () => {
     let response = await fetch(config.Host_url + 'yandexmap');
     let data = await response.json();
@@ -23,6 +10,12 @@ const get_API_KEY = async () => {
 }
 let lastCoord = null;
 const YandexMap = ({events}) => {
+
+    const eventsRef = useRef(events);
+    useEffect(() => {
+        eventsRef.current = events;
+    }, [events]);
+    
     useEffect(() => {
         const loadScript = (url) => {
             return new Promise((resolve, reject) => {
@@ -84,7 +77,7 @@ const YandexMap = ({events}) => {
                     }
                 };
                 var dots = [];
-                let events = await getEvents();
+                let events = eventsRef.current;
                 events.forEach(event => {
                     dots.push(
                         new window.ymaps.Placemark(
@@ -122,7 +115,7 @@ const YandexMap = ({events}) => {
                         setTimeout(() => {
                             try{
                                 const datePicker = document.getElementById('date_input');
-                                const today = new Date().toISOString().split('T')[0]; // Получаем текущую дату в формате YYYY-MM-DD
+                                const today = new Date().toISOString().split('T')[0];
                                 datePicker.setAttribute('min', today);
                                 document.getElementById("newEventButton").addEventListener("click", NewEventAdd);
                             } catch {

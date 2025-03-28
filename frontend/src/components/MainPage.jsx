@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-// import {Profile, loggedUser} from './Profile.jsx';
 import YandexMap from './YandexMap.jsx';
 import EventsList from "./EventsList.jsx";
 import {Header} from "./Header.jsx";
