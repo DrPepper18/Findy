@@ -40,7 +40,6 @@ const RegScreen = () => {
             interests: interests
         };
 
-        console.log(JSON.stringify(user))
         try {
             const response = await fetch(config.Host_url + 'auth/register', {
                 method: 'POST',

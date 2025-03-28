@@ -10,7 +10,6 @@ const LoginCheck = async (email, password, setError) => {
                         {email, password}, 
                         {headers: {'Content-Type': 'application/json'}}
                 );
-                console.log(response);
                 // Успешный вход
                 document.cookie = `jwt=${response.data.token}; path=/;`;
                 // Перенаправление на главную страницу или другую страницу

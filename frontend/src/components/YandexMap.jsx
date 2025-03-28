@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom/client'; // Import ReactDOM for rendering
+// import ReactDOM from 'react-dom/client'; // Import ReactDOM for rendering
 import NewEventForm from './NewEvent';
 import config from '../config';
 
@@ -113,42 +113,7 @@ const YandexMap = () => {
                     // Create a new placemark at the new center
                     lastPlacemark = new window.ymaps.Placemark(coord, {
                         balloonContentHeader: "<h2>Новое событие</h2>",
-                        balloonContentBody: `
-                        <div id="NewEventForm" style="width: 250px;">
-                            <input
-                                class="placemark_element"
-                                id="name_input"
-                                placeholder="Название"
-                            />
-                            <div id="datetimeDiv" style="display: flex;">
-                                <input
-                                    class="placemark_element"
-                                    id="date_input"
-                                    style="width: 55%;"
-                                    type="date"
-                                />
-                                <input
-                                    class="placemark_element"
-                                    id="time_input"
-                                    type="time"
-                                />
-                            </div>
-                            <div id="capacityDiv" style="display: flex;">
-                                <input
-                                    class="placemark_element"
-                                    id="capacity_input"
-                                    type="number"
-                                    min="1" max="16" value="5"
-                                />
-                                <h3>человек</h3>
-                            </div>
-                            <input
-                                id="newEventButton"
-                                type="button"
-                                class="ToGoButton"
-                                value="Начать созыв!"
-                            />
-                        </div>`,
+                        balloonContentBody: NewEventForm,
                         hintContent: "Нажмите, чтобы создать событие"
                     }, {preset: 'islands#redIcon'});
 

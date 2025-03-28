@@ -32,7 +32,6 @@ export class EventObj {
             }
 
             const data = await response.json();
-            console.log('Success:', data);
             setJoined(true); // Update state to show the user has joined
             // Update event members count or handle success as needed
         } catch (error) {
