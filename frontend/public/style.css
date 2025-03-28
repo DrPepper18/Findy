@@ -31,8 +31,6 @@ header{
     padding: 10px;
     box-sizing: border-box;
     overflow-y: auto;
-    /* margin-top: 10px; */
-    /* border-radius: 20px; */
 }
 #CreateEvent {
     width: auto;
