@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import NewEventForm from './NewEvent';
 import config from '../config';
+import '../styles/NewEvent.css'
 
 
 const get_API_KEY = async () => {
@@ -41,6 +42,8 @@ const YandexMap = ({events}) => {
                     let date = document.getElementById("date_input");
                     let time = document.getElementById("time_input");
                     let capacity = document.getElementById("capacity_input");
+                    let minage = document.getElementById("minage_input");
+                    let maxage = document.getElementById("maxage_input");
                     if (!(name.value && date.value && time.value)) {
                         alert("Введите все данные");
                     } else {
@@ -56,7 +59,7 @@ const YandexMap = ({events}) => {
                                     <p>${new Date(date.value).toLocaleDateString('ru-RU')}</p>
                                     <input type="button" class="ToGoButton" value="Я приду!"></input>
                                 `,
-                                balloonContentFooter: `${0}-${9999} лет, до ${capacity.value} человек`,
+                                balloonContentFooter: `${minage.value}-${maxage.value} лет, до ${capacity.value} человек`,
                                 hintContent: name.value, 
                             })
                         )
@@ -71,7 +74,7 @@ const YandexMap = ({events}) => {
                                 "lat": lastCoord[0], "lon": lastCoord[1],
                                 "date": date.value,
                                 "capacity": capacity.value,
-                                "minage": 0, "maxage": 9999
+                                "minage": minage.value, "maxage": maxage.value
                             })
                         });
                     }

@@ -1,25 +1,9 @@
-#CreateEvent {
-    padding: 20px;
-    border: 1px solid #000;
-    background-color: #f9f9f9;
-    max-width: 500px;
-    margin: auto;
+#capacity_input, #minage_input, #maxage_input {
+    height: 20px;
 }
-
-#CreateEvent ul.suggestions {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    margin-top: 5px;
-    padding: 0;
-    width: 100%;
-    box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
-    list-style-type: none;
+#capacityDiv > h3 {
+    margin-top: 10px;
 }
-
-#CreateEvent li {
-    padding: 8px;
-    cursor: pointer;
-}
-#CreateEvent li:hover {
-    background-color: #f0f0f0;
+#ageDiv > h3{
+    margin-top: 10px;
 }
