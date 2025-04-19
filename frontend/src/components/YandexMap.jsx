@@ -81,6 +81,10 @@ const YandexMap = ({events}) => {
                 };
                 var dots = [];
                 let events = eventsRef.current;
+
+                const url = new URL(window.location.href);
+                const params = url.searchParams;
+                let targetPlacemark = null;
                 events.forEach(event => {
                     dots.push(
                         new window.ymaps.Placemark(
@@ -95,17 +99,25 @@ const YandexMap = ({events}) => {
                             hintContent: event.Name, 
                         })
                     )
+                    if (params.has('id') && params.get('id') == event.ID) {
+                        targetPlacemark = dots[dots.length-1];
+                    }
                 })
                 dots.forEach(dot => {
                     map.geoObjects.add(dot);
                 })
+
+                if (targetPlacemark) {
+                    targetPlacemark.balloon.open();
+                    map.setCenter(targetPlacemark.geometry.getCoordinates(), 10);
+                }
+
                 let lastPlacemark = null;
                 map.events.add('actionend', function (e) {
                     let coord = e.originalEvent.map.getCenter();
                     if (lastPlacemark) {
                         map.geoObjects.remove(lastPlacemark);
                     }
-                    // Create a new placemark at the new center
                     lastPlacemark = new window.ymaps.Placemark(coord, {
                         balloonContentHeader: "<h2>Новое событие</h2>",
                         balloonContentBody: NewEventForm,
