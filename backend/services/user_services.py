@@ -17,6 +17,9 @@ class LoginRequest(BaseModel):
 
 
 async def register_user(data: RegisterRequest) -> str:
+    """
+    INSERT INTO users (Email, passwordhash, name)
+    """
     passwordhash = await create_password_hash(password=data.password)
     async with async_session_maker() as session:
         new_user = User(
@@ -31,6 +34,9 @@ async def register_user(data: RegisterRequest) -> str:
 
 
 async def get_password_hash(email: str) -> bytes:
+    """
+    SELECT passwordhash FROM users WHERE Email == [our email]
+    """
     async with async_session_maker() as session:
         query_select = db.select(User).where(User.Email == email)
         result = await session.execute(query_select)

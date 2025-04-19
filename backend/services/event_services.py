@@ -16,12 +16,18 @@ class EventPostRequest(BaseModel):
 
 
 async def get_all_events() -> list:
+    """
+    SELECT * FROM events
+    """
     async with async_session_maker() as session:
         query_select = db.select(Event)
         result = await session.execute(query_select)
         return result.scalars().fetchall()
 
 async def add_new_event(data: EventPostRequest):
+    """
+    INSERT INTO events (Name, Longitude, Latitude, ...)
+    """
     async with async_session_maker() as session:
         new_event = Event(
             Name=data.name,
