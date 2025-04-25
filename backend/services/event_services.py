@@ -20,9 +20,10 @@ async def get_all_events() -> list:
     SELECT * FROM events
     """
     async with async_session_maker() as session:
-        query_select = db.select(Event)
+        query_select = db.select(Event).where(Event.DateTime >= datetime.now())
         result = await session.execute(query_select)
         return result.scalars().fetchall()
+
 
 async def add_new_event(data: EventPostRequest):
     """
