@@ -17,7 +17,7 @@ class EventPostRequest(BaseModel):
 
 async def get_all_events() -> list:
     """
-    SELECT * FROM events
+    SELECT * FROM events WHERE DateTime >= $current_date
     """
     async with async_session_maker() as session:
         query_select = db.select(Event).where(Event.DateTime >= datetime.now())
@@ -27,7 +27,7 @@ async def get_all_events() -> list:
 
 async def add_new_event(data: EventPostRequest):
     """
-    INSERT INTO events (Name, Longitude, Latitude, ...)
+    INSERT INTO events ($Name, $Longitude, $Latitude, ...)
     """
     async with async_session_maker() as session:
         new_event = Event(
