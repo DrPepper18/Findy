@@ -9,6 +9,18 @@ const get_API_KEY = async () => {
     let data = await response.json();
     return data.api_key || "";
 }
+const EventCard = (event) => {
+    return {
+        balloonContentHeader: `<h3>${event.Name}</h3>`,
+        balloonContentBody: `
+            <p>${new Date(event.DateTime).toLocaleDateString('ru-RU')}</p>
+            <p>${event.MinAge}-${event.MaxAge} лет, до ${event.MaxMembers} человек</p>
+            <input type="button" id="ToGoID" class="ToGoButton" value="Я приду!"></input>
+        `,
+        balloonContentFooter: event.ID ? `http://localhost:3000?id=${event.ID}` : 'Перезагрузите страницу',
+        hintContent: event.Name, 
+    }
+}
 let lastCoord = null;
 const YandexMap = ({events}) => {
 
@@ -49,19 +61,16 @@ const YandexMap = ({events}) => {
                     } else {
                         let parent = document.getElementById("NewEventForm");
                         parent.innerHTML = '<h3>Событие создано!</h3>';
-
+                        let event = {
+                            Name: name.value,
+                            DateTime: date.value,
+                            MinAge: minage.value,
+                            MaxAge: maxage.value,
+                            MaxMembers: capacity.value,
+                            ID: null
+                        };
                         map.geoObjects.add(
-                            new window.ymaps.Placemark(
-                            lastCoord, 
-                            {
-                                balloonContentHeader: name.value,
-                                balloonContentBody: `
-                                    <p>${new Date(date.value).toLocaleDateString('ru-RU')}</p>
-                                    <input type="button" class="ToGoButton" value="Я приду!"></input>
-                                `,
-                                balloonContentFooter: `${minage.value}-${maxage.value} лет, до ${capacity.value} человек`,
-                                hintContent: name.value, 
-                            })
+                            new window.ymaps.Placemark(lastCoord, EventCard(event))
                         )
 
                         await fetch(config.Host_url + 'events', {
@@ -88,16 +97,8 @@ const YandexMap = ({events}) => {
                 events.forEach(event => {
                     dots.push(
                         new window.ymaps.Placemark(
-                        [event.Latitude, event.Longitude], 
-                        {
-                            balloonContentHeader: event.Name,
-                            balloonContentBody: `
-                                <p>${new Date(event.DateTime).toLocaleDateString('ru-RU')}</p>
-                                <input type="button" class="ToGoButton" value="Я приду!"></input>
-                            `,
-                            balloonContentFooter: `${event.MinAge}-${event.MaxAge} лет, до ${event.MaxMembers} человек`,
-                            hintContent: event.Name, 
-                        })
+                        [event.Latitude, event.Longitude], EventCard(event)
+                        )
                     )
                     if (params.has('id') && params.get('id') == event.ID) {
                         targetPlacemark = dots[dots.length-1];
@@ -106,7 +107,6 @@ const YandexMap = ({events}) => {
                 dots.forEach(dot => {
                     map.geoObjects.add(dot);
                 })
-
                 if (targetPlacemark) {
                     targetPlacemark.balloon.open();
                     map.setCenter(targetPlacemark.geometry.getCoordinates(), 10);
@@ -134,7 +134,7 @@ const YandexMap = ({events}) => {
                                 datePicker.setAttribute('min', today);
                                 document.getElementById("newEventButton").addEventListener("click", NewEventAdd);
                             } catch {
-                                console.log("Failed to find the button");
+                                
                             };
                         }, 0);
                     }) 

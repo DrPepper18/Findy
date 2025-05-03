@@ -7,6 +7,10 @@ import config from '../config';
 const MainScreen = () => {
     const [events, setEvents] = useState([]);
     useEffect(() => {
+        if(!document.cookie) {
+            window.location.href = '/login';
+            return;
+        }
         const getEvents = async () => {
             try {
                 let response = await fetch(config.Host_url + 'events');
@@ -26,7 +30,6 @@ const MainScreen = () => {
         <div className="App">
             <Header/>
             <main>
-                {document.cookie ? '' : window.location.href = '/login'}
                 <div style={{display: 'flex', width: '100%'}}>
                     <EventsList events={events}/>
                     <YandexMap events={events}/>
