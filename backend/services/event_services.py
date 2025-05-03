@@ -6,13 +6,13 @@ from pydantic import BaseModel
 
 
 class EventPostRequest(BaseModel):
-    name: str
-    date: datetime
-    lon: float
-    lat: float
-    capacity: int
-    minage: int
-    maxage: int
+    Name: str
+    DateTime: datetime
+    Longitude: float
+    Latitude: float
+    Capacity: int
+    MinAge: int
+    MaxAge: int
 
 
 async def get_all_events() -> list:
@@ -31,13 +31,13 @@ async def add_new_event(data: EventPostRequest):
     """
     async with async_session_maker() as session:
         new_event = Event(
-            Name=data.name,
-            Longitude=data.lon,
-            Latitude=data.lat,
-            MaxMembers=data.capacity,
-            DateTime=data.date,
-            MinAge=data.minage,
-            MaxAge=data.maxage
+            Name=data.Name,
+            Longitude=data.Longitude,
+            Latitude=data.Latitude,
+            Capacity=data.Capacity,
+            DateTime=data.DateTime,
+            MinAge=data.MinAge,
+            MaxAge=data.MaxAge
         )
         session.add(new_event)
         await session.commit()

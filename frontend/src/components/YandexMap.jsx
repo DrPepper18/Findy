@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import NewEventForm from './NewEvent';
+import EventCard from './EventCard';
 import config from '../config';
 import '../styles/NewEvent.css'
 
@@ -9,18 +10,7 @@ const get_API_KEY = async () => {
     let data = await response.json();
     return data.api_key || "";
 }
-const EventCard = (event) => {
-    return {
-        balloonContentHeader: `<h3>${event.Name}</h3>`,
-        balloonContentBody: `
-            <p>${new Date(event.DateTime).toLocaleDateString('ru-RU')}</p>
-            <p>${event.MinAge}-${event.MaxAge} лет, до ${event.MaxMembers} человек</p>
-            <input type="button" id="ToGoID" class="ToGoButton" value="Я приду!"></input>
-        `,
-        balloonContentFooter: event.ID ? `http://localhost:3000?id=${event.ID}` : 'Перезагрузите страницу',
-        hintContent: event.Name, 
-    }
-}
+
 let lastCoord = null;
 const YandexMap = ({events}) => {
 
@@ -50,42 +40,30 @@ const YandexMap = ({events}) => {
                     zoom: 10
                 });
                 const NewEventAdd = async () => {
-                    let name = document.getElementById("name_input");
-                    let date = document.getElementById("date_input");
-                    let time = document.getElementById("time_input");
-                    let capacity = document.getElementById("capacity_input");
-                    let minage = document.getElementById("minage_input");
-                    let maxage = document.getElementById("maxage_input");
-                    if (!(name.value && date.value && time.value)) {
+                    let event = {
+                        Name: document.getElementById("name_input").value,
+                        Latitude: lastCoord[0],
+                        Longitude: lastCoord[1],
+                        DateTime: document.getElementById("date_input").value,
+                        MinAge: document.getElementById("minage_input").value,
+                        MaxAge: document.getElementById("maxage_input").value,
+                        Capacity: document.getElementById("capacity_input").value
+                    };
+                    if (!(event.Name && event.DateTime)) {
                         alert("Введите все данные");
                     } else {
                         let parent = document.getElementById("NewEventForm");
                         parent.innerHTML = '<h3>Событие создано!</h3>';
-                        let event = {
-                            Name: name.value,
-                            DateTime: date.value,
-                            MinAge: minage.value,
-                            MaxAge: maxage.value,
-                            MaxMembers: capacity.value,
-                            ID: null
-                        };
-                        map.geoObjects.add(
-                            new window.ymaps.Placemark(lastCoord, EventCard(event))
-                        )
 
                         await fetch(config.Host_url + 'events', {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                "name": name.value, 
-                                "lat": lastCoord[0], "lon": lastCoord[1],
-                                "date": date.value,
-                                "capacity": capacity.value,
-                                "minage": minage.value, "maxage": maxage.value
-                            })
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify(event)
                         });
+
+                        map.geoObjects.add(
+                            new window.ymaps.Placemark(lastCoord, EventCard(event))
+                        )
                     }
                 };
                 var dots = [];
@@ -100,7 +78,7 @@ const YandexMap = ({events}) => {
                         [event.Latitude, event.Longitude], EventCard(event)
                         )
                     )
-                    if (params.has('id') && params.get('id') == event.ID) {
+                    if (params.has('id') && Number(params.get('id')) === event.ID) {
                         targetPlacemark = dots[dots.length-1];
                     }
                 })
@@ -133,9 +111,7 @@ const YandexMap = ({events}) => {
                                 const today = new Date().toISOString().split('T')[0];
                                 datePicker.setAttribute('min', today);
                                 document.getElementById("newEventButton").addEventListener("click", NewEventAdd);
-                            } catch {
-                                
-                            };
+                            } catch {};
                         }, 0);
                     }) 
                 });

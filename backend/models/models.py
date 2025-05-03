@@ -27,4 +27,4 @@ class Event(Base):
     DateTime = Column(DateTime())
     MinAge = Column(Integer())
     MaxAge = Column(Integer())
-    MaxMembers = Column(Integer())
+    Capacity = Column(Integer())
