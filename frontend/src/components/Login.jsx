@@ -34,7 +34,7 @@ const LoginScreen = () => {
 		<div className='LoginPanel'>
 			<h1>Findy. Log in</h1>
 			<input
-				style={{border: '1px black solid', width: '95%'}}
+				className='input-field'
 				placeholder="E-mail"
 				value={email}
 				onChange={(e) => setEmail(e.target.value)}
@@ -42,7 +42,7 @@ const LoginScreen = () => {
 			<br />
 			<input
 				type="password"
-				style={{border: '1px black solid', width: '95%'}}
+				className='input-field'
 				placeholder="Password"
 				value={password}
 				onChange={(e) => setPassword(e.target.value)}
