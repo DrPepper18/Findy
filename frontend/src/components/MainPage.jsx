@@ -18,7 +18,7 @@ const MainScreen = () => {
                     throw new Error(`Request failed with status: ${response.status}`);
                 }
                 let data = await response.json();
-                setEvents(data.events || []); // Ensure it's always an array
+                setEvents(data.events || []);
             } catch (error) {
                 console.error('Error fetching events:', error);
                 return [];

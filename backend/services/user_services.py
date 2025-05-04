@@ -9,7 +9,6 @@ class RegisterRequest(BaseModel):
     name: str
     email: str
     password: str
-    interests: list
 
 class LoginRequest(BaseModel):
     email: str

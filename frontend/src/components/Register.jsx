@@ -7,20 +7,7 @@ const RegScreen = () => {
     const [nickname, setNickname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [interests, setInterests] = useState([]);
-    const [currentInterest, setCurrentInterest] = useState('');
     const [emailError, setEmailError] = useState('');
-
-    const addInterest = (e) => {
-        if (e.key === 'Enter' && currentInterest) {
-            setInterests([...interests, currentInterest]);
-            setCurrentInterest('');
-        }
-    };
-
-    const removeInterest = (index) => {
-        setInterests(interests.filter((_, i) => i !== index));
-    };
 
     const validateEmail = (email) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -37,20 +24,17 @@ const RegScreen = () => {
             name: nickname,
             email: email,
             password: password,
-            interests: interests
         };
 
         try {
             const response = await fetch(config.Host_url + 'auth/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(user)
             });
 
             if (response.ok) {
-                window.location.href = '/'
+                window.location.href = '/';
             } else {
                 console.error('Error registering user');
             }
@@ -84,29 +68,6 @@ const RegScreen = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
-            <br />
-            <div className="interests-section">
-                <input
-                    className="input-field"
-                    placeholder="Ваши интересы"
-                    value={currentInterest}
-                    onChange={(e) => setCurrentInterest(e.target.value)}
-                    onKeyDown={addInterest}
-                />
-                <ul className="interests-list">
-                    {interests.map((interest, index) => (
-                        <li key={index} className="interest-item">
-                            {interest}
-                            <button
-                                className="remove-button"
-                                onClick={() => removeInterest(index)}
-                            >
-                                &#x2716;
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            </div>
             <br />
             <input
                 className="ToGoButton"

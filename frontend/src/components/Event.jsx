@@ -11,7 +11,7 @@ export const Event = ({ event }) => {
         <div className="Event" ref={useRef('CurrentEvents')}>
             <div>
                 <h2 style={{marginTop: '5px'}}>{event.Name}</h2>
-                <h4 style={{ marginTop: '-10px' }}>
+                <h4 style={{marginTop: '-10px'}}>
                     {new Date(event.DateTime).toLocaleDateString('ru-RU')} {event.MinAge} - {event.MaxAge} лет
                 </h4>
             </div>
