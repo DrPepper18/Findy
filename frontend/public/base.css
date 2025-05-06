@@ -1,5 +1,7 @@
 h1, h2, h3, h4, h5 {
     font-family: 'Comfortaa';
+    margin-block-start: 0.2em;
+    margin-block-end: 0.4em;
 }
 p {
     font-family: 'Comfortaa';

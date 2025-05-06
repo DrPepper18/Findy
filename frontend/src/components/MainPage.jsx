@@ -30,7 +30,7 @@ const MainScreen = () => {
         <div className="App">
             <Header/>
             <main>
-                <div style={{display: 'flex', width: '100%'}}>
+                <div className='mainPage'>
                     <EventsList events={events}/>
                     <YandexMap events={events}/>
                 </div>

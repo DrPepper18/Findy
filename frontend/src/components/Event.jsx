@@ -10,8 +10,8 @@ export const Event = ({ event }) => {
     return (
         <div className="Event" ref={useRef('CurrentEvents')}>
             <div>
-                <h2 style={{marginTop: '5px'}}>{event.Name}</h2>
-                <h4 style={{marginTop: '-10px'}}>
+                <h2>{event.Name}</h2>
+                <h4>
                     {new Date(event.DateTime).toLocaleDateString('ru-RU')} {event.MinAge} - {event.MaxAge} лет
                 </h4>
             </div>
@@ -19,7 +19,7 @@ export const Event = ({ event }) => {
                 {joined ? (<span>Вы добавлены</span>) : (
                     <input type="button" value="Я приду" className="ToGoButton" onClick={handleJoin}></input>
                 )}
-                <h5 style={{marginTop: 0, marginLeft: '4%'}}>до {event.Capacity} человек</h5>
+                <h5>до {event.Capacity} человек</h5>
             </div>
         </div>
     )

@@ -1,7 +1,7 @@
 import {Event} from "./Event";
 const EventsList = ({events}) => {
     return (
-        <div id="CurrentEvents" style={{}}>
+        <div id="CurrentEvents">
             {events.length > 0 ? 
                 events.map((event, index) => (
                     <Event key={index} event={event}/>

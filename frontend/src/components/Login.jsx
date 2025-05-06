@@ -51,13 +51,11 @@ const LoginScreen = () => {
 			{error && <p style={{color: 'red'}}>{error}</p>}
 			<input
 				className='ToGoButton'
-				style={{width: '97%'}}
 				type="button"
 				value="Log in"
 				onClick={handleLogin}
 			/>
 			<input
-				style={{width: '97%', borderRadius: '10px'}}
 				type="button"
 				value="Register"
 				onClick={() => window.location.href = '/register'}
