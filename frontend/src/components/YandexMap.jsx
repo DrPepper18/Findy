@@ -10,6 +10,17 @@ const get_API_KEY = async () => {
     let data = await response.json();
     return data.api_key || "";
 }
+const getCookie = async (name) => {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [cookieName, cookieValue] = cookie.trim().split('=');
+        if (cookieName === name) {
+            return decodeURIComponent(cookieValue);
+        }
+    }
+    return null;
+}
+  
 
 let lastCoord = null;
 const YandexMap = ({events}) => {
@@ -55,9 +66,13 @@ const YandexMap = ({events}) => {
                         let parent = document.getElementById("NewEventForm");
                         parent.innerHTML = '<h3>Событие создано!</h3>';
 
+                        let token = await getCookie('jwt');
                         await fetch(config.Host_url + 'events', {
                             method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            },
                             body: JSON.stringify(event)
                         });
 

@@ -18,7 +18,7 @@ app.include_router(user_router)
 app.include_router(event_router)
 
 async def startup():
-    await init_db()  # Initialize the DB before starting FastAPI
+    await init_db()
 
 if __name__ == "__main__":
     asyncio.run(startup())
