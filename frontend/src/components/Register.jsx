@@ -34,6 +34,7 @@ const RegScreen = () => {
             });
 
             if (response.ok) {
+                document.cookie = `jwt=${response.token}; path=/;`;
                 window.location.href = '/';
             } else {
                 console.error('Error registering user');

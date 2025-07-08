@@ -63,9 +63,6 @@ const YandexMap = ({events}) => {
                     if (!(event.Name && event.DateTime)) {
                         alert("Введите все данные");
                     } else {
-                        let parent = document.getElementById("NewEventForm");
-                        parent.innerHTML = '<h3>Событие создано!</h3>';
-
                         let token = await getCookie('jwt');
                         await fetch(config.Host_url + 'events', {
                             method: 'POST',
@@ -78,7 +75,10 @@ const YandexMap = ({events}) => {
 
                         map.geoObjects.add(
                             new window.ymaps.Placemark(lastCoord, EventCard(event))
-                        )
+                        );
+                        
+                        let parent = document.getElementById("NewEventForm");
+                        parent.innerHTML = '<h3>Событие создано!</h3>';
                     }
                 };
                 var dots = [];
@@ -121,7 +121,7 @@ const YandexMap = ({events}) => {
                     map.geoObjects.add(lastPlacemark);
                     map.events.add("balloonopen", function (e) {
                         setTimeout(() => {
-                            try{
+                            try {
                                 const datePicker = document.getElementById('date_input');
                                 const today = new Date().toISOString().split('T')[0];
                                 datePicker.setAttribute('min', today);
