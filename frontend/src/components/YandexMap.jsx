@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import NewEventForm from './NewEvent';
-import EventCard from './EventCard';
-import config from '../config';
+import {EventCard, EventJoin} from './EventCard';
+import {config, getCookie} from '../config';
 import '../styles/NewEvent.css'
 
 
@@ -9,16 +9,6 @@ const get_API_KEY = async () => {
     let response = await fetch(config.Host_url + 'yandexmap');
     let data = await response.json();
     return data.api_key || "";
-}
-const getCookie = async (name) => {
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-        const [cookieName, cookieValue] = cookie.trim().split('=');
-        if (cookieName === name) {
-            return decodeURIComponent(cookieValue);
-        }
-    }
-    return null;
 }
   
 
@@ -64,7 +54,7 @@ const YandexMap = ({events}) => {
                         alert("Введите все данные");
                     } else {
                         let token = await getCookie('jwt');
-                        await fetch(config.Host_url + 'events', {
+                        const response = await fetch(config.Host_url + 'event/create', {
                             method: 'POST',
                             headers: {
                                 'Authorization': `Bearer ${token}`,
@@ -73,12 +63,10 @@ const YandexMap = ({events}) => {
                             body: JSON.stringify(event)
                         });
 
-                        map.geoObjects.add(
-                            new window.ymaps.Placemark(lastCoord, EventCard(event))
-                        );
-                        
-                        let parent = document.getElementById("NewEventForm");
-                        parent.innerHTML = '<h3>Событие создано!</h3>';
+                        if (response.ok) {
+                            window.location.href = '/';
+                            return;
+                        }
                     }
                 };
                 var dots = [];
@@ -106,8 +94,12 @@ const YandexMap = ({events}) => {
                 }
 
                 let lastPlacemark = null;
+                let balloonOpenHandler = null;
                 map.events.add('actionend', function (e) {
                     let coord = e.originalEvent.map.getCenter();
+                    if (balloonOpenHandler) {
+                        map.events.remove('balloonopen', balloonOpenHandler);
+                    }
                     if (lastPlacemark) {
                         map.geoObjects.remove(lastPlacemark);
                     }
@@ -119,16 +111,36 @@ const YandexMap = ({events}) => {
 
                     lastCoord = coord;
                     map.geoObjects.add(lastPlacemark);
-                    map.events.add("balloonopen", function (e) {
-                        setTimeout(() => {
+                    balloonOpenHandler = async function (e) {
+                        setTimeout(async () => {
+
                             try {
                                 const datePicker = document.getElementById('date_input');
                                 const today = new Date().toISOString().split('T')[0];
                                 datePicker.setAttribute('min', today);
                                 document.getElementById("newEventButton").addEventListener("click", NewEventAdd);
                             } catch {};
+
+                            try {
+                                const eventID = e.get('target').properties._data.eventID;
+                                let token = await getCookie('jwt');
+                                const response = await fetch(config.Host_url + 'event/joincheck', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Authorization': `Bearer ${token}`,
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({"EventID": eventID})
+                                })
+                                let data = await response.json();
+                                if (data.joined)
+                                    document.getElementById("ToGoID").disabled = true;
+                                document.getElementById("ToGoID").addEventListener("click", 
+                                    async () => {EventJoin(eventID)});
+                            } catch {};
                         }, 0);
-                    }) 
+                    }
+                    map.events.add("balloonopen", balloonOpenHandler)
                 });
             });
         };

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import YandexMap from './YandexMap.jsx';
 import EventsList from "./EventsList.jsx";
 import {Header} from "./Header.jsx";
-import config from '../config';
+import {config, getCookie} from '../config';
 
 const MainScreen = () => {
     const [events, setEvents] = useState([]);
@@ -13,9 +13,20 @@ const MainScreen = () => {
         }
         const getEvents = async () => {
             try {
-                let response = await fetch(config.Host_url + 'events');
+                let token = await getCookie('jwt');
+                let response = await fetch(config.Host_url + 'events', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                });
                 if (!response.ok) {
-                    throw new Error(`Request failed with status: ${response.status}`);
+                    if (response.status === 401) {
+                        window.location.href = '/login';
+                        return;
+                    } else
+                        throw new Error(`Request failed with status: ${response.status}`);
                 }
                 let data = await response.json();
                 setEvents(data.events || []);

@@ -2,7 +2,7 @@
     height: 20px;
 }
 #capacityDiv > h3 { margin-top: 10px; }
-#ageDiv > h3{ margin-top: 10px; }
+#ageDiv > h3 { margin-top: 10px; }
 #datetimeDiv, #ageDiv, #capacityDiv {
     display: flex;
 }

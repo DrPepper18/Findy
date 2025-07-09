@@ -8,7 +8,8 @@ from sqlalchemy import (
     BigInteger,
     ForeignKey,
     LargeBinary,
-    Float
+    Float,
+    UniqueConstraint
 )
 Base = declarative_base()
 
@@ -28,3 +29,11 @@ class Event(Base):
     MinAge = Column(Integer())
     MaxAge = Column(Integer())
     Capacity = Column(Integer())
+
+class Records(Base):
+    __tablename__ = "records"
+    Event = Column(ForeignKey(Event.ID), primary_key=True)
+    User = Column(ForeignKey(User.Email))
+    __table_args__ = (
+        UniqueConstraint(Event, User, name='unique_record'),
+    )

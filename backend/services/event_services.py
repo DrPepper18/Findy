@@ -14,6 +14,9 @@ class EventPostRequest(BaseModel):
     MinAge: int
     MaxAge: int
 
+class EventJoinRequest(BaseModel):
+    EventID: int
+
 
 async def get_all_events() -> list:
     """
@@ -40,4 +43,17 @@ async def add_new_event(data: EventPostRequest):
             MaxAge=data.MaxAge
         )
         session.add(new_event)
+        await session.commit()
+
+
+async def register_join(data: EventJoinRequest, userEmail: str):
+    """
+    INSERT INTO records ($EventID, $UserEmail)
+    """
+    async with async_session_maker() as session:
+        new_record = Records(
+            Event=data.EventID,
+            User=userEmail
+        )
+        session.add(new_record)
         await session.commit()

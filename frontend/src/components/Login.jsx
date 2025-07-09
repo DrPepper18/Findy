@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import config from '../config';
+import {config} from '../config';
 
 
 const LoginCheck = async (email, password, setError) => {

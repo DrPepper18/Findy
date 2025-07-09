@@ -14,6 +14,9 @@ class LoginRequest(BaseModel):
     email: str
     password: str
 
+class CheckJoinRequest(BaseModel):
+    EventID: int
+
 
 async def register_user(data: RegisterRequest) -> str:
     """
@@ -53,3 +56,13 @@ async def login_check(data: LoginRequest) -> str:
         return jwttoken
     else:
         return False
+    
+async def join_check(data: CheckJoinRequest, userEmail: str) -> bool:
+    async with async_session_maker() as session:
+        query_select = db.select(Records).where(
+            (Records.Event == data.EventID) & 
+            (Records.User == userEmail)
+        )
+        result = await session.execute(query_select)
+        joined_data = result.scalars().first()
+        return joined_data is not None
