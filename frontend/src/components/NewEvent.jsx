@@ -1,3 +1,6 @@
+import {config, getCookie} from "../config"
+
+
 const NewEventForm = `
     <div id="NewEventForm" style="width: 250px;">
         <input
@@ -52,4 +55,36 @@ const NewEventForm = `
         />
     </div>`
 
-export default NewEventForm;
+
+const NewEventCard = (coord) => {
+    return new window.ymaps.Placemark(coord, {
+        balloonContentHeader: "<h2>Новое событие</h2>",
+        balloonContentBody: NewEventForm,
+        hintContent: "Нажмите, чтобы создать событие"
+    }, {preset: 'islands#redIcon'});
+}
+
+
+const NewEventAdd = async (event) => {        
+    if (!(event.Name && event.DateTime)) {
+        alert("Введите все данные");
+    } else {
+        let token = await getCookie('jwt');
+        const response = await fetch(config.Host_url + 'event/create', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(event)
+        });
+
+        if (response.ok) {
+            window.location.href = '/';
+            return;
+        }
+    }
+};
+
+
+export {NewEventForm, NewEventCard, NewEventAdd};

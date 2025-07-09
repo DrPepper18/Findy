@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import NewEventForm from './NewEvent';
+import {NewEventCard, NewEventAdd} from './NewEvent';
 import {EventCard, EventJoin} from './EventCard';
 import {config, getCookie} from '../config';
 import '../styles/NewEvent.css'
@@ -12,7 +12,6 @@ const get_API_KEY = async () => {
 }
   
 
-let lastCoord = null;
 const YandexMap = ({events}) => {
 
     const eventsRef = useRef(events);
@@ -40,35 +39,7 @@ const YandexMap = ({events}) => {
                     center: [55.7558, 37.6176],
                     zoom: 10
                 });
-                const NewEventAdd = async () => {
-                    let event = {
-                        Name: document.getElementById("name_input").value,
-                        Latitude: lastCoord[0],
-                        Longitude: lastCoord[1],
-                        DateTime: document.getElementById("date_input").value,
-                        MinAge: document.getElementById("minage_input").value,
-                        MaxAge: document.getElementById("maxage_input").value,
-                        Capacity: document.getElementById("capacity_input").value
-                    };
-                    if (!(event.Name && event.DateTime)) {
-                        alert("Введите все данные");
-                    } else {
-                        let token = await getCookie('jwt');
-                        const response = await fetch(config.Host_url + 'event/create', {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': `Bearer ${token}`,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(event)
-                        });
-
-                        if (response.ok) {
-                            window.location.href = '/';
-                            return;
-                        }
-                    }
-                };
+                
                 var dots = [];
                 let events = eventsRef.current;
 
@@ -93,34 +64,41 @@ const YandexMap = ({events}) => {
                     map.setCenter(targetPlacemark.geometry.getCoordinates(), 10);
                 }
 
-                let lastPlacemark = null;
+                let lastCoord = map.getCenter();
                 let balloonOpenHandler = null;
+                let lastPlacemark = NewEventCard(lastCoord);
+                map.geoObjects.add(lastPlacemark);
+
                 map.events.add('actionend', function (e) {
-                    let coord = e.originalEvent.map.getCenter();
+                    lastCoord = e.originalEvent.map.getCenter();
                     if (balloonOpenHandler) {
                         map.events.remove('balloonopen', balloonOpenHandler);
                     }
                     if (lastPlacemark) {
                         map.geoObjects.remove(lastPlacemark);
                     }
-                    lastPlacemark = new window.ymaps.Placemark(coord, {
-                        balloonContentHeader: "<h2>Новое событие</h2>",
-                        balloonContentBody: NewEventForm,
-                        hintContent: "Нажмите, чтобы создать событие"
-                    }, {preset: 'islands#redIcon'});
-
-                    lastCoord = coord;
+                    lastPlacemark = NewEventCard(lastCoord);
                     map.geoObjects.add(lastPlacemark);
                     balloonOpenHandler = async function (e) {
                         setTimeout(async () => {
-
                             try {
                                 const datePicker = document.getElementById('date_input');
                                 const today = new Date().toISOString().split('T')[0];
                                 datePicker.setAttribute('min', today);
-                                document.getElementById("newEventButton").addEventListener("click", NewEventAdd);
+                                document.getElementById("newEventButton").addEventListener("click", async () => {
+                                    let event = {
+                                        Name: document.getElementById("name_input").value,
+                                        Latitude: lastCoord[0],
+                                        Longitude: lastCoord[1],
+                                        DateTime: document.getElementById("date_input").value,
+                                        MinAge: document.getElementById("minage_input").value,
+                                        MaxAge: document.getElementById("maxage_input").value,
+                                        Capacity: document.getElementById("capacity_input").value
+                                    };
+                                    NewEventAdd(event);
+                                });
                             } catch {};
-
+                            
                             try {
                                 const eventID = e.get('target').properties._data.eventID;
                                 let token = await getCookie('jwt');
