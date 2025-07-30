@@ -3,6 +3,13 @@ const config = {
 };
 
 
+const getApiKey = async () => {
+    let response = await fetch(config.Host_url + 'yandexmap');
+    let data = await response.json();
+    return data.api_key || "";
+}
+
+
 const getCookie = async (name) => {
     const cookies = document.cookie.split(';');
     for (let cookie of cookies) {
@@ -15,4 +22,4 @@ const getCookie = async (name) => {
 }
 
 
-export {config, getCookie};
+export {config, getCookie, getApiKey};

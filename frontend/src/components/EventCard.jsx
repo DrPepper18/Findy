@@ -30,5 +30,19 @@ const EventCard = (event) => {
     }
 }
 
+const EventJoinCheck = async (eventID) => {
+    let token = await getCookie('jwt');
+    const response = await fetch(config.Host_url + 'event/joincheck', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({"EventID": eventID})
+    });
+    let data = await response.json();
+    return data.joined;
+}
 
-export {EventCard, EventJoin};
+
+export {EventCard, EventJoin, EventJoinCheck};

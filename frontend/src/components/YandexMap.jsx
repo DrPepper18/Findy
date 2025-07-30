@@ -1,16 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import {NewEventCard, NewEventAdd} from './NewEvent';
-import {EventCard, EventJoin} from './EventCard';
-import {config, getCookie} from '../config';
-import '../styles/NewEvent.css'
+import {EventCard, EventJoin, EventJoinCheck} from './EventCard';
+import {getApiKey} from '../config';
+import '../styles/NewEvent.css';
 
 
-const get_API_KEY = async () => {
-    let response = await fetch(config.Host_url + 'yandexmap');
-    let data = await response.json();
-    return data.api_key || "";
-}
-  
+const DEFAULT_CENTER = [55.7558, 37.6176];
+const DEFAULT_ZOOM = 10;
+
 
 const YandexMap = ({events}) => {
 
@@ -30,95 +27,98 @@ const YandexMap = ({events}) => {
                 document.body.appendChild(script);
             });
         };
+
+        const setPlacemarks = (map) => {
+            var dots = [];
+            const url = new URL(window.location.href);
+            const params = url.searchParams;
+            let targetPlacemark = null;
+            eventsRef.current.forEach(event => {
+                dots.push(
+                    new window.ymaps.Placemark(
+                    [event.Latitude, event.Longitude], EventCard(event))
+                )
+                if (params.has('id') && Number(params.get('id')) === event.ID) {
+                    targetPlacemark = dots[dots.length-1];
+                }
+            })
+            dots.forEach(dot => {
+                map.geoObjects.add(dot);
+            })
+            if (targetPlacemark) {
+                targetPlacemark.balloon.open();
+                map.setCenter(targetPlacemark.geometry.getCoordinates(), 10);
+            }
+        };
         
         const initMap = async () => {
-            const API_KEY = await get_API_KEY();
+            const API_KEY = await getApiKey();
             await loadScript(`https://api-maps.yandex.ru/2.1/?apikey=${API_KEY}&lang=ru_RU`);
             window.ymaps.ready(async () => {
                 const map = new window.ymaps.Map('map', {
-                    center: [55.7558, 37.6176],
-                    zoom: 10
+                    center: DEFAULT_CENTER, // Make it read your geoposition
+                    zoom: DEFAULT_ZOOM
                 });
                 
-                var dots = [];
-                let events = eventsRef.current;
-
-                const url = new URL(window.location.href);
-                const params = url.searchParams;
-                let targetPlacemark = null;
-                events.forEach(event => {
-                    dots.push(
-                        new window.ymaps.Placemark(
-                        [event.Latitude, event.Longitude], EventCard(event)
-                        )
-                    )
-                    if (params.has('id') && Number(params.get('id')) === event.ID) {
-                        targetPlacemark = dots[dots.length-1];
-                    }
-                })
-                dots.forEach(dot => {
-                    map.geoObjects.add(dot);
-                })
-                if (targetPlacemark) {
-                    targetPlacemark.balloon.open();
-                    map.setCenter(targetPlacemark.geometry.getCoordinates(), 10);
-                }
+                setPlacemarks(map);
 
                 let lastCoord = map.getCenter();
-                let balloonOpenHandler = null;
                 let lastPlacemark = NewEventCard(lastCoord);
+                let newEventButtonHandler = null;
                 map.geoObjects.add(lastPlacemark);
-
+                
                 map.events.add('actionend', function (e) {
                     lastCoord = e.originalEvent.map.getCenter();
-                    if (balloonOpenHandler) {
-                        map.events.remove('balloonopen', balloonOpenHandler);
-                    }
                     if (lastPlacemark) {
                         map.geoObjects.remove(lastPlacemark);
                     }
                     lastPlacemark = NewEventCard(lastCoord);
                     map.geoObjects.add(lastPlacemark);
-                    balloonOpenHandler = async function (e) {
-                        setTimeout(async () => {
-                            try {
-                                const datePicker = document.getElementById('date_input');
-                                const today = new Date().toISOString().split('T')[0];
-                                datePicker.setAttribute('min', today);
-                                document.getElementById("newEventButton").addEventListener("click", async () => {
-                                    let event = {
-                                        Name: document.getElementById("name_input").value,
-                                        Latitude: lastCoord[0],
-                                        Longitude: lastCoord[1],
-                                        DateTime: document.getElementById("date_input").value,
-                                        MinAge: document.getElementById("minage_input").value,
-                                        MaxAge: document.getElementById("maxage_input").value,
-                                        Capacity: document.getElementById("capacity_input").value
-                                    };
-                                    NewEventAdd(event);
-                                });
-                            } catch {};
-                            
-                            try {
-                                const eventID = e.get('target').properties._data.eventID;
-                                let token = await getCookie('jwt');
-                                const response = await fetch(config.Host_url + 'event/joincheck', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Authorization': `Bearer ${token}`,
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify({"EventID": eventID})
-                                })
-                                let data = await response.json();
-                                if (data.joined)
-                                    document.getElementById("ToGoID").disabled = true;
-                                document.getElementById("ToGoID").addEventListener("click", 
-                                    async () => {EventJoin(eventID)});
-                            } catch {};
-                        }, 0);
-                    }
-                    map.events.add("balloonopen", balloonOpenHandler)
+                });
+                map.events.add("balloonopen", async function (e) {
+                    requestAnimationFrame(async () => {
+                        try {
+                            const datePicker = document.getElementById("date_input");
+                            const today = new Date().toISOString().split('T')[0];
+                            datePicker.setAttribute('min', today);
+                            if (newEventButtonHandler) {
+                                document.getElementById("newEventButton")
+                                    .removeEventListener("click", newEventButtonHandler);
+                            }
+                            newEventButtonHandler = async () => {
+                                let date = document.getElementById("date_input").value;
+                                // let time = document.getElementById("time_input").value;
+                                // console.log(new Date(`${date}T${time}`).toISOString());
+                                let name = document.getElementById("name_input").value;
+                                let minage = document.getElementById("minage_input").value;
+                                let maxage = document.getElementById("maxage_input").value;
+                                let capacity = document.getElementById("capacity_input").value;
+                                let event = {
+                                    Name: name,
+                                    Latitude: lastCoord[0],
+                                    Longitude: lastCoord[1],
+                                    DateTime: date,
+                                    MinAge: minage,
+                                    MaxAge: maxage,
+                                    Capacity: capacity
+                                };
+                                await NewEventAdd(event);
+                            };
+                            document.getElementById("newEventButton")
+                                .addEventListener("click", newEventButtonHandler);
+                            return;
+                        } catch {};
+
+                        try {
+                            const eventID = e.get('target').properties._data.eventID;
+                            if (await EventJoinCheck(eventID)) {
+                                document.getElementById("ToGoID").disabled = true;
+                            }
+                            document.getElementById("ToGoID").addEventListener("click", 
+                                async () => {await EventJoin(eventID)});
+                            return;
+                        } catch {};
+                    });
                 });
             });
         };
@@ -128,4 +128,6 @@ const YandexMap = ({events}) => {
         <div id="map"></div>
     );
 };
+
+
 export default YandexMap;
