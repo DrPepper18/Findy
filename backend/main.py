@@ -40,9 +40,5 @@ def health_check():
     return {"status": "ok"}
 
 
-async def startup():
-    await init_db()
-
 if __name__ == "__main__":
-    asyncio.run(startup())
     uvicorn.run("main:app", port=8000, reload=True)

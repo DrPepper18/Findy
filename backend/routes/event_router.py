@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Header
 from services.event_services import *
+from services.user_services import *
 from config import YANDEX_API
 from crypt_module import *
 
@@ -11,8 +12,10 @@ async def get_events(authorization: str = Header(...)):
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Invalid authorization header")
     
-    if await verify_jwt_token(authorization.split()[1]):
-        eventlist = await get_all_events()
+    payload = await verify_jwt_token(authorization.split()[1])
+    if payload:
+        user_data = await get_user_info(email=payload["sub"])
+        eventlist = await get_all_events(user_data=user_data)
         return {"message": "Here will be your events", "events": eventlist}
 
 

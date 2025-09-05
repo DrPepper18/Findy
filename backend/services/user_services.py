@@ -66,3 +66,11 @@ async def join_check(data: CheckJoinRequest, userEmail: str) -> bool:
         result = await session.execute(query_select)
         joined_data = result.scalars().first()
         return joined_data is not None
+    
+async def get_user_info(email: str) -> User:
+    async with async_session_maker() as session:
+        query_select = db.select(User).where(User.Email == email)
+        result = await session.execute(query_select)
+        user_data = result.scalars().first()
+        return user_data
+

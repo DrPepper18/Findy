@@ -98,8 +98,8 @@ const YandexMap = ({events}) => {
                                     Latitude: lastCoord[0],
                                     Longitude: lastCoord[1],
                                     DateTime: date,
-                                    MinAge: minage,
-                                    MaxAge: maxage,
+                                    MinAge: minage || null,
+                                    MaxAge: maxage || null,
                                     Capacity: capacity
                                 };
                                 await NewEventAdd(event);

@@ -18,6 +18,7 @@ class User(Base):
     Email = Column(String(), primary_key=True)
     PasswordHash = Column(LargeBinary())
     Name = Column(String())
+    Age = Column(Integer())
 
 class Event(Base):
     __tablename__ = "events"
@@ -26,8 +27,8 @@ class Event(Base):
     Latitude = Column(Float())
     Longitude = Column(Float())
     DateTime = Column(DateTime())
-    MinAge = Column(Integer())
-    MaxAge = Column(Integer())
+    MinAge = Column(Integer(), nullable=True)
+    MaxAge = Column(Integer(), nullable=True)
     Capacity = Column(Integer())
 
 class Records(Base):

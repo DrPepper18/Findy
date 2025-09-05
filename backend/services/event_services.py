@@ -3,6 +3,7 @@ from models.database import *
 from crypt_module import *
 from datetime import datetime
 from pydantic import BaseModel
+from sqlalchemy import or_, and_
 
 
 class EventPostRequest(BaseModel):
@@ -11,19 +12,28 @@ class EventPostRequest(BaseModel):
     Longitude: float
     Latitude: float
     Capacity: int
-    MinAge: int
-    MaxAge: int
+    MinAge: int | None = None
+    MaxAge: int | None = None
 
 class EventJoinRequest(BaseModel):
     EventID: int
 
 
-async def get_all_events() -> list:
+async def get_all_events(user_data: User) -> list:
     """
-    SELECT * FROM events WHERE DateTime >= $current_date
+    SELECT * FROM events
+    WHERE DateTime >= $current_date
+    AND ($Age >= events.MinAge OR events.MinAge = NULL)
+    AND ($Age <= events.MaxAge OR events.MaxAge = NULL)
     """
     async with async_session_maker() as session:
-        query_select = db.select(Event).where(Event.DateTime >= datetime.now())
+        query_select = db.select(Event).where(
+            and_(
+                Event.DateTime >= datetime.now(),
+                or_(user_data.Age >= Event.MinAge, Event.MinAge.is_(None)),
+                or_(user_data.Age <= Event.MaxAge, Event.MaxAge.is_(None))
+            )
+        )
         result = await session.execute(query_select)
         return result.scalars().fetchall()
 
@@ -70,9 +80,7 @@ async def delete_expired_events():
     """
     async with async_session_maker() as session:
         delete_records_query = db.delete(Records).where(
-            Records.Event.in_(
-                db.select(Event.ID).where(Event.DateTime < datetime.now())
-            )
+            Records.Event.in_(db.select(Event.ID).where(Event.DateTime < datetime.now()))
         )
         delete_events_query = db.delete(Event).where(Event.DateTime < datetime.now())
         await session.execute(delete_records_query)
