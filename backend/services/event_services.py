@@ -57,3 +57,24 @@ async def register_join(data: EventJoinRequest, userEmail: str):
         )
         session.add(new_record)
         await session.commit()
+
+
+async def delete_expired_events():
+    """
+    DELETE FROM records
+    INNER JOIN events ON records.Event = Event.ID
+    WHERE DateTime < $datetime.now()
+
+    DELETE FROM events
+    WHERE DateTime < $datetime.now()
+    """
+    async with async_session_maker() as session:
+        delete_records_query = db.delete(Records).where(
+            Records.Event.in_(
+                db.select(Event.ID).where(Event.DateTime < datetime.now())
+            )
+        )
+        delete_events_query = db.delete(Event).where(Event.DateTime < datetime.now())
+        await session.execute(delete_records_query)
+        await session.execute(delete_events_query)
+        await session.commit()
