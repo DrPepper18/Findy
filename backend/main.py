@@ -23,7 +23,7 @@ async def periodic_cleanup():
         await asyncio.sleep(6 * 60 * 60)  # 6 hours
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(root_path='/api/v1', lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -38,6 +38,11 @@ app.include_router(event_router)
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
+
+@app.get("/yandexmap")
+async def get_api_key():
+    return {"api_key": YANDEX_API}
 
 
 if __name__ == "__main__":

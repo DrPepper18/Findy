@@ -14,7 +14,7 @@ const MainScreen = () => {
         const getEvents = async () => {
             try {
                 let token = await getCookie('jwt');
-                let response = await fetch(config.Host_url + 'events', {
+                let response = await fetch(config.Host_url + 'event/get_all', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,

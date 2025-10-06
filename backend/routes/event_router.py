@@ -4,9 +4,9 @@ from services.user_services import *
 from config import YANDEX_API
 from crypt_module import *
 
-event_router = APIRouter()
+event_router = APIRouter(prefix='/event')
 
-@event_router.post("/api/v1/events")
+@event_router.post("/get_all")
 async def get_events(authorization: str = Header(...)):
 
     if not authorization.startswith("Bearer "):
@@ -19,7 +19,7 @@ async def get_events(authorization: str = Header(...)):
         return {"message": "Here will be your events", "events": eventlist}
 
 
-@event_router.post("/api/v1/event/create")
+@event_router.post("/create")
 async def new_event(data: EventPostRequest, authorization: str = Header(...)):
 
     if not authorization.startswith("Bearer "):
@@ -30,7 +30,7 @@ async def new_event(data: EventPostRequest, authorization: str = Header(...)):
         return {"message": "POST request is completed"}
 
 
-@event_router.post("/api/v1/event/join")
+@event_router.post("/join")
 async def event_join(data: EventJoinRequest, authorization: str = Header(...)):
 
     if not authorization.startswith("Bearer "):
@@ -41,8 +41,16 @@ async def event_join(data: EventJoinRequest, authorization: str = Header(...)):
     if payload:
         await register_join(data, payload["sub"])
         return {"message": "POST request is completed"}
+    
 
+@event_router.post("/joincheck")
+async def event_join_check(data: CheckJoinRequest, authorization: str = Header(...)):
 
-@event_router.get("/api/v1/yandexmap")
-async def get_api_key():
-    return {"api_key": YANDEX_API}
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid authorization header")
+    
+    payload = await verify_jwt_token(authorization.split()[1])
+
+    if payload:
+        result = await join_check(data, payload["sub"])
+        return {"joined": result}
