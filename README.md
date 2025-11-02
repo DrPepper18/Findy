@@ -8,5 +8,14 @@ Findy — это сервис для создания сходок по инте
 
 ## Технический стек
 
-- **Backend**: Python, FastAPI, SQLAlchemy, PostgreSQL, jwt, bcrypt
+- **Backend**: Python, FastAPI, SQLAlchemy, PostgreSQL, alembic, jwt, bcrypt
 - **Frontend**: HTML, CSS, JavaScript, React
+- **Tools**: Docker, Docker Compose
+
+## Запуск проекта
+
+```bash
+docker compose up --build
+```
+
+Да, всё так просто. Но пока что он работает ТОЛЬКО из Docker.
