@@ -48,7 +48,7 @@ async def add_new_event(data: EventPostRequest):
             Longitude=data.Longitude,
             Latitude=data.Latitude,
             Capacity=data.Capacity,
-            DateTime=data.DateTime,
+            DateTime=data.DateTime.astimezone().replace(tzinfo=None),
             MinAge=data.MinAge,
             MaxAge=data.MaxAge
         )
