@@ -28,6 +28,7 @@ async def register_user(data: RegisterRequest) -> str:
             Email=data.email,
             PasswordHash=passwordhash,
             Name=data.name,
+            Age=18
         )
         session.add(new_user)
         await session.commit()
