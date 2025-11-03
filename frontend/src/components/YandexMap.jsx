@@ -87,20 +87,16 @@ const YandexMap = ({events}) => {
                             }
                             newEventButtonHandler = async () => {
                                 let date = document.getElementById("date_input").value;
-                                // let time = document.getElementById("time_input").value;
-                                // console.log(new Date(`${date}T${time}`).toISOString());
-                                let name = document.getElementById("name_input").value;
-                                let minage = document.getElementById("minage_input").value;
-                                let maxage = document.getElementById("maxage_input").value;
-                                let capacity = document.getElementById("capacity_input").value;
+                                let time = document.getElementById("time_input").value;
+                                
                                 let event = {
-                                    Name: name,
                                     Latitude: lastCoord[0],
                                     Longitude: lastCoord[1],
-                                    DateTime: date,
-                                    MinAge: minage || null,
-                                    MaxAge: maxage || null,
-                                    Capacity: capacity
+                                    Name: document.getElementById("name_input").value,
+                                    DateTime: new Date(`${date}T${time}`).toISOString(),
+                                    MinAge: document.getElementById("minage_input").value || null,
+                                    MaxAge: document.getElementById("maxage_input").value || null,
+                                    Capacity: document.getElementById("capacity_input").value
                                 };
                                 await NewEventAdd(event);
                             };
@@ -111,9 +107,7 @@ const YandexMap = ({events}) => {
 
                         try {
                             const eventID = e.get('target').properties._data.eventID;
-                            if (await EventJoinCheck(eventID)) {
-                                document.getElementById("ToGoID").disabled = true;
-                            }
+                            document.getElementById("ToGoID").disabled = await EventJoinCheck(eventID);
                             document.getElementById("ToGoID").addEventListener("click", 
                                 async () => {await EventJoin(eventID)});
                             return;
