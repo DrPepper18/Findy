@@ -48,7 +48,7 @@ async def add_new_event(data: EventPostRequest):
             Longitude=data.Longitude,
             Latitude=data.Latitude,
             Capacity=data.Capacity,
-            DateTime=data.DateTime,
+            DateTime=data.DateTime.astimezone().replace(tzinfo=None),
             MinAge=data.MinAge,
             MaxAge=data.MaxAge
         )
@@ -86,3 +86,14 @@ async def delete_expired_events():
         await session.execute(delete_records_query)
         await session.execute(delete_events_query)
         await session.commit()
+
+
+async def get_event_info(id: int) -> Event:
+    """
+    SELECT * FROM EVENTS WHERE ID = $id
+    """
+    async with async_session_maker() as session:
+        query_select = db.select(Event).where(Event.ID == id)
+        result = await session.execute(query_select)
+        event_data = result.scalars().first()
+        return event_data

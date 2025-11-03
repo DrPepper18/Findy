@@ -69,6 +69,9 @@ async def join_check(data: CheckJoinRequest, userEmail: str) -> bool:
         return joined_data is not None
     
 async def get_user_info(email: str) -> User:
+    """
+    SELECT * FROM users WHERE Email = $email
+    """
     async with async_session_maker() as session:
         query_select = db.select(User).where(User.Email == email)
         result = await session.execute(query_select)
