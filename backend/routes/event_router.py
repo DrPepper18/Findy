@@ -39,8 +39,15 @@ async def event_join(data: EventJoinRequest, authorization: str = Header(...)):
     payload = await verify_jwt_token(authorization.split()[1])
 
     if payload:
-        await register_join(data, payload["sub"])
-        return {"message": "POST request is completed"}
+        user_info = await get_user_info(payload["sub"])
+        event_info = await get_event_info(data.EventID)
+        user_age, min_age, max_age = user_info.Age, event_info.MinAge, event_info.MaxAge
+        
+        if (min_age <= user_age or not min_age) and (user_age <= max_age or not max_age):
+            await register_join(data, payload["sub"])
+            return {"message": "POST request is completed"}
+        else:
+            raise HTTPException(status_code=403, detail="Not allowed")
     
 
 @event_router.post("/joincheck")
