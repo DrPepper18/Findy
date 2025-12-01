@@ -8,6 +8,8 @@ from fastapi import HTTPException
 async def verify_jwt_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_TOKEN, algorithms=["HS256"])
+        if not payload:
+            raise HTTPException(status_code=401, detail="Unauthorized")
         return payload
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expired")
