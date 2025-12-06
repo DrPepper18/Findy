@@ -14,8 +14,14 @@ Findy — это сервис для создания сходок по инте
 
 ## Запуск проекта
 
-```bash
-docker compose up --build
+```
+cd backend
+python -m app.main
 ```
 
-Да, всё так просто. Но пока что он работает ТОЛЬКО из Docker.
+```
+cd frontend
+npm start
+```
+
+Запуск в docker пока не работает

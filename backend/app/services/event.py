@@ -23,8 +23,8 @@ async def get_all_events(user_data: User) -> list:
     """
     SELECT * FROM events
     WHERE DateTime >= $current_date
-    AND ($Age >= events.MinAge OR events.MinAge = NULL)
-    AND ($Age <= events.MaxAge OR events.MaxAge = NULL)
+    AND ($Age >= events.MinAge OR events.MinAge IS NULL)
+    AND ($Age <= events.MaxAge OR events.MaxAge IS NULL)
     """
     async with async_session_maker() as session:
         query_select = db.select(Event).where(
@@ -90,7 +90,7 @@ async def delete_expired_events():
 
 async def get_event_info(id: int) -> Event:
     """
-    SELECT * FROM EVENTS WHERE ID = $id
+    SELECT * FROM events WHERE ID = $id
     """
     async with async_session_maker() as session:
         query_select = db.select(Event).where(Event.ID == id)
