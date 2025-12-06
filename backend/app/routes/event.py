@@ -5,7 +5,7 @@ from app.crypt_module import *
 
 router = APIRouter(prefix='/event')
 
-@router.post("/get_all")
+@router.post("/")
 async def get_events(authorization: str = Header(...)):
 
     if not authorization.startswith("Bearer "):
