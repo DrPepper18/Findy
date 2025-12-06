@@ -1,6 +1,7 @@
-from routes.user_router import *
-from routes.event_router import *
-from models.database import *
+from app.routes import user, event
+from app.services.event import delete_expired_events
+from app.models.database import *
+from app.config import YANDEX_API
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
@@ -20,7 +21,7 @@ async def lifespan(app):
 async def periodic_cleanup():
     while True:
         await delete_expired_events()
-        await asyncio.sleep(6 * 60 * 60)  # 6 hours
+        await asyncio.sleep(6 * 60 * 60)
 
 
 app = FastAPI(root_path='/api/v1', lifespan=lifespan)
@@ -31,8 +32,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(user_router)
-app.include_router(event_router)
+app.include_router(user.router)
+app.include_router(event.router)
 
 
 @app.get("/health")
@@ -46,4 +47,4 @@ async def get_api_key():
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)

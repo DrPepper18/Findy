@@ -4,7 +4,6 @@ from sqlalchemy import (
     Integer,
     String,
     DateTime,
-    Boolean,
     BigInteger,
     ForeignKey,
     LargeBinary,
@@ -33,7 +32,8 @@ class Event(Base):
 
 class Records(Base):
     __tablename__ = "records"
-    Event = Column(ForeignKey(Event.ID), primary_key=True)
+    ID = Column(BigInteger(), primary_key=True, autoincrement=True)
+    Event = Column(ForeignKey(Event.ID))
     User = Column(ForeignKey(User.Email))
     __table_args__ = (
         UniqueConstraint(Event, User, name='unique_record'),

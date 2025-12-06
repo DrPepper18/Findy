@@ -1,4 +1,4 @@
-from config import SECRET_TOKEN
+from app.config import SECRET_TOKEN
 import jwt
 import bcrypt
 import time

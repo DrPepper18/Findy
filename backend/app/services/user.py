@@ -1,6 +1,6 @@
-from models.models import *
-from models.database import *
-from crypt_module import *
+from app.models.models import *
+from app.models.database import *
+from app.crypt_module import *
 from datetime import datetime
 from pydantic import BaseModel
 

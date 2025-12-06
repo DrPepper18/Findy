@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Header
-from services.event_services import *
-from services.user_services import *
-from config import YANDEX_API
-from crypt_module import *
+from app.services.event import *
+from app.services.user import *
+from app.crypt_module import *
 
-event_router = APIRouter(prefix='/event')
+router = APIRouter(prefix='/event')
 
-@event_router.post("/get_all")
+@router.post("/get_all")
 async def get_events(authorization: str = Header(...)):
 
     if not authorization.startswith("Bearer "):
@@ -19,7 +18,7 @@ async def get_events(authorization: str = Header(...)):
         return {"message": "Here will be your events", "events": eventlist}
 
 
-@event_router.post("/create")
+@router.post("/create")
 async def new_event(data: EventPostRequest, authorization: str = Header(...)):
 
     if not authorization.startswith("Bearer "):
@@ -30,7 +29,7 @@ async def new_event(data: EventPostRequest, authorization: str = Header(...)):
         return {"message": "POST request is completed"}
 
 
-@event_router.post("/join")
+@router.post("/join")
 async def event_join(data: EventJoinRequest, authorization: str = Header(...)):
 
     if not authorization.startswith("Bearer "):
@@ -43,14 +42,14 @@ async def event_join(data: EventJoinRequest, authorization: str = Header(...)):
         event_info = await get_event_info(data.EventID)
         user_age, min_age, max_age = user_info.Age, event_info.MinAge, event_info.MaxAge
         
-        if (min_age <= user_age or not min_age) and (user_age <= max_age or not max_age):
+        if (not min_age or min_age <= user_age) and (not max_age or user_age <= max_age):
             await register_join(data, payload["sub"])
             return {"message": "POST request is completed"}
         else:
             raise HTTPException(status_code=403, detail="Not allowed")
     
 
-@event_router.post("/joincheck")
+@router.post("/joincheck")
 async def event_join_check(data: CheckJoinRequest, authorization: str = Header(...)):
 
     if not authorization.startswith("Bearer "):
