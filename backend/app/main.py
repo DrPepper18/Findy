@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 import uvicorn
 from contextlib import asynccontextmanager
+from config import YANDEX_API
 
 
 @asynccontextmanager
