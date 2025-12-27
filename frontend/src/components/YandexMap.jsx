@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import {NewEventCard, NewEventAdd} from './NewEvent';
-import {EventCard, EventJoin, EventJoinCheck} from './EventCard';
-import {getApiKey} from '../config';
+import {EventCard, EventJoin} from './EventCard';
+import { EventJoinCheck } from '../api';
+import {getApiKey} from '../api';
 import '../styles/NewEvent.css';
 
 

@@ -1,24 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import {config} from '../config';
+import {LoginCheck} from "../api"
 
 
-const LoginCheck = async (email, password, setError) => {
-	try {
-		const response = await axios.post(config.Host_url + 'auth/login', 
-			{email, password}, 
-			{headers: {'Content-Type': 'application/json'}}
-		);
-		document.cookie = `jwt=${response.data.token}; path=/;`;
-		window.location.href = '/';
-	} catch (error) {
-		if (error.response && (error.response.status === 400 || error.response.status === 401)) {
-			setError('Неверные данные входа');
-		} else {
-			setError('Произошла ошибка. Попробуйте позже.');
-		}
-	}
-};
 
 const LoginScreen = () => {
 	const [email, setEmail] = useState('');

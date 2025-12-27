@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 //import Cookies from 'js-cookie';
 import '../styles/RegScreen.css';
-import {config} from "../config";
+import {RegisterUser} from "../api";
 
 const RegScreen = () => {
     const [nickname, setNickname] = useState('');
@@ -27,18 +27,7 @@ const RegScreen = () => {
         };
 
         try {
-            const response = await fetch(config.Host_url + 'auth/register', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(user)
-            });
-
-            if (response.ok) {
-                document.cookie = `jwt=${response.token}; path=/;`;
-                window.location.href = '/';
-            } else {
-                console.error('Error registering user');
-            }
+            await RegisterUser(user);
         } catch (error) {
             console.error('Error:', error);
         }
