@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: postgres:15
@@ -11,12 +13,11 @@ services:
       - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
-      retries: 5
-      start_period: 30s
-    networks:
-      - app-network
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
 
   backend:
     build: ./backend
@@ -26,22 +27,28 @@ services:
       YANDEX_API: ${YANDEX_API}
     ports:
       - "8000:8000"
+    volumes:
+      - ./backend:/app
     depends_on:
       db:
         condition: service_healthy
-    networks:
-      - app-network
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped
 
   frontend:
     build: ./frontend
     ports:
       - "3000:3000"
-    networks:
-      - app-network  # Add this line for frontend too
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - backend
+    command: npm start
+    restart: unless-stopped
 
 volumes:
   postgres_data:
-
-networks:  # Add this networks section
-  app-network:
-    driver: bridge
