@@ -5,7 +5,7 @@ import time
 from fastapi import HTTPException
 
 
-async def verify_jwt_token(token: str):
+def verify_jwt_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_TOKEN, algorithms=["HS256"])
         if not payload:
@@ -17,7 +17,7 @@ async def verify_jwt_token(token: str):
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
-async def create_jwt_token(email: str) -> str:
+def create_jwt_token(email: str) -> str:
     payload = {
         "sub": email,
         "iss": "Findy",
@@ -28,9 +28,9 @@ async def create_jwt_token(email: str) -> str:
     return token
 
 
-async def create_password_hash(password: str) -> bytes:
+def create_password_hash(password: str) -> bytes:
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
 
 
-async def is_password_correct(password: str, passwordhash: bytes) -> bool:
+def is_password_correct(password: str, passwordhash: bytes) -> bool:
     return bcrypt.checkpw(password.encode(), passwordhash)

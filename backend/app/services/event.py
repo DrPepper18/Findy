@@ -1,22 +1,8 @@
 from app.models.models import *
 from app.models.database import *
 from app.crypt_module import *
-from datetime import datetime
-from pydantic import BaseModel
 from sqlalchemy import or_, and_
-
-
-class EventPostRequest(BaseModel):
-    Name: str
-    DateTime: datetime
-    Longitude: float
-    Latitude: float
-    Capacity: int
-    MinAge: int | None = None
-    MaxAge: int | None = None
-
-class EventJoinRequest(BaseModel):
-    EventID: int
+from app.schemas import *
 
 
 async def get_all_events(user_data: User) -> list:
@@ -97,3 +83,4 @@ async def get_event_info(id: int) -> Event:
         result = await session.execute(query_select)
         event_data = result.scalars().first()
         return event_data
+

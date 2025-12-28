@@ -1,6 +1,8 @@
 from fastapi import HTTPException, APIRouter, Header
 from app.services.user import *
 from app.crypt_module import *
+from app.schemas import *
+
 
 router = APIRouter(prefix='/auth')
 

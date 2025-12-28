@@ -2,6 +2,7 @@ from fastapi import APIRouter, Header
 from app.services.event import *
 from app.services.user import *
 from app.crypt_module import *
+from app.schemas import *
 
 router = APIRouter(prefix='/event')
 
@@ -11,7 +12,7 @@ async def get_events(authorization: str = Header(...)):
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Invalid authorization header")
     
-    payload = await verify_jwt_token(token=authorization.split()[1])
+    payload = verify_jwt_token(token=authorization.split()[1])
 
     user_data = await get_user_info(email=payload["sub"])
     eventlist = await get_all_events(user_data=user_data)
@@ -24,7 +25,7 @@ async def new_event(data: EventPostRequest, authorization: str = Header(...)):
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Invalid authorization header")
     
-    payload = await verify_jwt_token(token=authorization.split()[1])
+    payload = verify_jwt_token(token=authorization.split()[1])
 
     await add_new_event(data)
     return {"message": "POST request is completed"}
@@ -36,7 +37,7 @@ async def event_join(data: EventJoinRequest, authorization: str = Header(...)):
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Invalid authorization header")
     
-    payload = await verify_jwt_token(authorization.split()[1])
+    payload = verify_jwt_token(authorization.split()[1])
 
     if payload:
         user_info = await get_user_info(payload["sub"])
@@ -56,7 +57,7 @@ async def event_join_check(data: CheckJoinRequest, authorization: str = Header(.
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Invalid authorization header")
     
-    payload = await verify_jwt_token(token=authorization.split()[1])
+    payload = verify_jwt_token(token=authorization.split()[1])
     
     result = await join_check(data, payload["sub"])
     return {"joined": result}
