@@ -1,8 +1,8 @@
-from app.config import SECRET_TOKEN
 import jwt
 import bcrypt
 import time
 from fastapi import HTTPException
+from app.config import SECRET_TOKEN
 
 
 def verify_jwt_token(token: str):

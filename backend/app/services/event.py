@@ -1,8 +1,9 @@
-from app.models.models import *
-from app.models.database import *
-from app.crypt_module import *
+from app.models.models import User, Event, Records
+from app.models.database import async_session_maker
+import sqlalchemy as db
 from sqlalchemy import or_, and_
-from app.schemas import *
+from app.schemas import EventJoinRequest, EventPostRequest
+from datetime import datetime
 
 
 async def get_event_signups(id: int) -> int:
@@ -20,7 +21,7 @@ async def get_event_signups(id: int) -> int:
 async def get_all_events(user_data: User) -> list:
     """
     SELECT * FROM events
-    WHERE DateTime >= $current_date
+    WHERE DateTime >= NOW()
     AND ($Age >= events.MinAge OR events.MinAge IS NULL)
     AND ($Age <= events.MaxAge OR events.MaxAge IS NULL)
     """

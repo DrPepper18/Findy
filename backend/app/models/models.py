@@ -12,12 +12,14 @@ from sqlalchemy import (
 )
 Base = declarative_base()
 
+
 class User(Base):
     __tablename__ = "users"
     Email = Column(String(), primary_key=True)
     PasswordHash = Column(LargeBinary())
     Name = Column(String())
     Age = Column(Integer())
+
 
 class Event(Base):
     __tablename__ = "events"
@@ -29,6 +31,7 @@ class Event(Base):
     MinAge = Column(Integer(), nullable=True)
     MaxAge = Column(Integer(), nullable=True)
     Capacity = Column(Integer())
+
 
 class Records(Base):
     __tablename__ = "records"

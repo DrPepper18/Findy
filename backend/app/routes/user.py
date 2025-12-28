@@ -1,10 +1,10 @@
-from fastapi import HTTPException, APIRouter, Header
-from app.services.user import *
-from app.crypt_module import *
-from app.schemas import *
+from fastapi import HTTPException, APIRouter
+from app.services.user import register_user, login_check
+from app.schemas import RegisterRequest, LoginRequest
 
 
 router = APIRouter(prefix='/auth')
+
 
 @router.post("/register")
 async def register(data: RegisterRequest):
