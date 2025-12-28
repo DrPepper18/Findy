@@ -40,15 +40,18 @@ async def event_join(data: EventJoinRequest, authorization: str = Header(...)):
     payload = verify_jwt_token(authorization.split()[1])
 
     if payload:
-        user_info = await get_user_info(payload["sub"])
-        event_info = await get_event_info(data.EventID)
-        user_age, min_age, max_age = user_info.Age, event_info.MinAge, event_info.MaxAge
+        user = await get_user_info(payload["sub"])
+        event = await get_event_info(data.EventID)
+        event_load = await get_event_signups(data.EventID)
         
-        if (not min_age or min_age <= user_age) and (not max_age or user_age <= max_age):
-            await register_join(data, payload["sub"])
-            return {"message": "POST request is completed"}
-        else:
-            raise HTTPException(status_code=403, detail="Not allowed")
+        if not((not event.MinAge or event.MinAge <= user.Age) and (not event.MaxAge or user.Age <= event.MaxAge)):
+            raise HTTPException(status_code=403, detail="Вы не подходите по возрасту")
+        
+        if not (event.Capacity > event_load):
+            raise HTTPException(status_code=403, detail="Уже набрано нужное количество человек")
+        
+        await register_join(data, payload["sub"])
+        return {"message": "POST request is completed"}
     
 
 @router.post("/joincheck")

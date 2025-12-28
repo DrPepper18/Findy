@@ -5,6 +5,18 @@ from sqlalchemy import or_, and_
 from app.schemas import *
 
 
+async def get_event_signups(id: int) -> int:
+    """
+    SELECT COUNT(*) FROM records
+    WHERE event_id = $event_id
+    """
+    async with async_session_maker() as session:
+        query_select = db.select(db.func.count(Records.ID)).where(Records.Event == id)
+        result = await session.execute(query_select)
+        event_signups_count = result.scalar()
+        return event_signups_count
+
+
 async def get_all_events(user_data: User) -> list:
     """
     SELECT * FROM events
@@ -83,4 +95,3 @@ async def get_event_info(id: int) -> Event:
         result = await session.execute(query_select)
         event_data = result.scalars().first()
         return event_data
-

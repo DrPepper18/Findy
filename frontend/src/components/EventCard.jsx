@@ -3,7 +3,6 @@ import { EventJoinRequest } from '../api';
 
 const EventJoin = async (eventID) => {
     await EventJoinRequest(eventID);
-    alert('Success!');
     document.getElementById("ToGoID").disabled = true;
 }
 

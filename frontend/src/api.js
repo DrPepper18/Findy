@@ -71,7 +71,14 @@ export const NewEventRequest = async (eventData) => {
 };
 
 export const EventJoinRequest = async (eventID) => {
-    await api.post('/event/join', {"EventID": eventID});
+    try {
+        await api.post('/event/join', {"EventID": eventID});
+        alert('Вы успешно записаны!');
+    } catch (error) {
+        const errorMessage = error.response?.data?.detail || "Произошла ошибка при записи";
+        console.error('Event join error:', error.response?.data || error.message);
+        alert(errorMessage);
+    } 
 };
 
 export const EventJoinCheck = async (eventID) => {
