@@ -1,76 +1,75 @@
-import {NewEventRequest} from "../api"
-
-const NewEventForm = `
-    <div id="NewEventForm" style="width: 250px;">
-        <input
-            class="placemark_element"
-            id="name_input"
-            placeholder="Название"
-        />
-        <div id="datetimeDiv">
-            <input
-                class="placemark_element"
-                id="date_input"
-                style="width: 55%;"
-                type="date"
-            />
-            <input
-                class="placemark_element"
-                id="time_input"
-                type="time"
-            />
-        </div>
-        <div id="capacityDiv">
-            <input
-                class="placemark_element"
-                id="capacity_input"
-                type="number"
-                min="1" max="16" value="5"
-            />
-            <h3>человек</h3>
-        </div>
-        <div id="ageDiv">
-            <h3>от</h3>
-            <input 
-                class="placemark_element"
-                id="minage_input"
-                type="number" 
-                min="0" max="100"
-            />
-            <h3>до</h3>
-            <input 
-                class="placemark_element"
-                id="maxage_input"
-                type="number" 
-                min="0" max="100" 
-            />
-            <h3>лет</h3>
-        </div>
-        <input
-            id="newEventButton"
-            type="button"
-            class="ToGoButton"
-            value="Начать созыв!"
-        />
-    </div>`
+import { useState } from 'react';
+import { Popup } from 'react-leaflet';
+import { NewEventRequest } from '../api';
 
 
-const NewEventCard = (coord) => {
-    return new window.ymaps.Placemark(coord, {
-        balloonContentHeader: "<h2>Новое событие</h2>",
-        balloonContentBody: NewEventForm,
-        hintContent: "Нажмите, чтобы создать событие"
-    }, {preset: 'islands#redIcon'});
+
+const NewEventCard = ({position}) => {
+
+    const [inputs, setInputs] = useState({
+        Name: "",
+        DateTime: "",
+        Capacity: 5,
+        MinAge: "",
+        MaxAge: ""
+    });
+
+    const handleCreate = async () => {       
+        const finalData = {
+            Name: inputs.Name,
+            DateTime: inputs.DateTime,
+            Latitude: parseFloat(position[0]),
+            Longitude: parseFloat(position[1]),
+            Capacity: parseInt(inputs.Capacity),
+            MinAge: inputs.MinAge ? parseInt(inputs.MinAge) : null,
+            MaxAge: inputs.MaxAge ? parseInt(inputs.MaxAge) : null
+        };
+
+        if (!(finalData.Name && finalData.DateTime)) {
+            console.log(finalData);
+            alert("Введите все данные");
+        } else {
+            console.log("Отправка данных:", finalData);
+            await NewEventRequest(finalData);
+            alert("Событие создано!");
+        }
+    };
+
+    function handleChange(e) {
+        const name = e.target.name;
+        const value = e.target.value;
+        setInputs(values => ({...values, [name]: value}));
+    }
+
+    return (
+        <Popup>
+            <form id="NewEventForm" style={{width: '250px'}}>
+                <input className="placemark_element" name="Name" placeholder="Название" value={inputs.Name} onChange={handleChange}/>
+                <input className="placemark_element" name="DateTime" type="datetime-local" value={inputs.DateTime} onChange={handleChange}/>
+                <div id="capacityDiv">
+                    <input className="placemark_element" name="Capacity" type="number"
+                        min="1" max="16" value={inputs.Capacity} onChange={handleChange}
+                    />
+                    <h3>человек</h3>
+                </div>
+                <div id="ageDiv">
+                    <h3>от</h3>
+                    <input className="placemark_element" name="MinAge" type="number" 
+                        min="0" max="100" value={inputs.MinAge} onChange={handleChange}
+                    />
+                    <h3>до</h3>
+                    <input className="placemark_element" name="MaxAge" type="number" 
+                        min="0" max="100" value={inputs.MaxAge} onChange={handleChange}
+                    />
+                    <h3>лет</h3>
+                </div>
+                <input id="newEventButton" type="button" className="ToGoButton"
+                    value="Начать созыв!" onClick={handleCreate}
+                />
+            </form>
+        </Popup>
+    );
 }
 
 
-const NewEventAdd = async (event) => {        
-    if (!(event.Name && event.DateTime)) {
-        alert("Введите все данные");
-    } else {
-        await NewEventRequest(event);
-    }
-};
-
-
-export {NewEventForm, NewEventCard, NewEventAdd};
+export { NewEventCard };

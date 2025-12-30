@@ -6,3 +6,10 @@
 #datetimeDiv, #ageDiv, #capacityDiv {
     display: flex;
 }
+input[type="datetime-local"] {
+    width: 96%;
+}
+
+.leaflet-attribution-flag {
+    display: none !important;
+}

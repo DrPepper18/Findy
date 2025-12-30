@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import YandexMap from './YandexMap.jsx';
+import { useEffect, useState } from 'react';
+import Map from './Map.jsx';
 import EventsList from "./EventsList.jsx";
 import {Header} from "./Header.jsx";
 import {getEvents} from '../api'
@@ -14,6 +14,7 @@ const MainScreen = () => {
         const fetchEvents = async () => {
             try {
                 let data = await getEvents();
+                console.log(data.events);
                 setEvents(data.events || []);
             } catch (error) {
                 console.error('Error fetching events:', error);
@@ -28,7 +29,7 @@ const MainScreen = () => {
             <main>
                 <div className='mainPage'>
                     <EventsList events={events}/>
-                    <YandexMap events={events}/>
+                    <Map events={events}/>
                 </div>
             </main>
         </div>
