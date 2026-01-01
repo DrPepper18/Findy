@@ -1,0 +1,8 @@
+.leaflet-attribution-flag {
+    display: none !important;
+}
+
+#map{
+    width: 65%;
+    height: 89vh;
+}

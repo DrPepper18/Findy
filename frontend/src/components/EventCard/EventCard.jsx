@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Popup } from 'react-leaflet';
-import { EventJoinRequest, EventJoinCheck } from '../api';
+import { EventJoinRequest, EventJoinCheck } from '../../api';
+import './EventCard.css'
 
 
 const EventCard = ({event}) => {

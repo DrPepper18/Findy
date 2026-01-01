@@ -1,9 +1,9 @@
-import React from 'react';
-import './styles/App.css';
-import {RegScreen} from "./components/Register";
-import {LoginScreen} from "./components/Login";
-import MainScreen from "./components/MainPage"
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { RegScreen } from "./pages/Register/Register.jsx";
+import { LoginScreen } from "./pages/Login/Login.jsx";
+import MainScreen from "./pages/MainPage/MainPage.jsx"
+import './styles/index.css'
+import './styles/base.css'
 
 
 function App() {

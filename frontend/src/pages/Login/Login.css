@@ -1,0 +1,11 @@
+.LoginPanel {
+    margin-top: 30vh; 
+    margin-inline: auto; 
+    width: 20%; 
+    border: 1px black solid; 
+    border-radius: 20px; 
+    padding: 10px;
+}
+.LoginPanel > input[type='button'] {
+    width: 97%;
+}

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import Map from './Map.jsx';
-import EventsList from "./EventsList.jsx";
-import {Header} from "./Header.jsx";
-import {getEvents} from '../api'
+import Map from '../../components/Map/Map.jsx';
+import EventsList from "../../components/EventsList/EventsList.jsx";
+import { Header } from "../../components/Header/Header.jsx";
+import { getEvents } from '../../api.js'
+import './MainPage.css'
 
 const MainScreen = () => {
     const [events, setEvents] = useState([]);
@@ -35,4 +36,4 @@ const MainScreen = () => {
         </div>
     );
 }
-export default MainScreen
+export default MainScreen;

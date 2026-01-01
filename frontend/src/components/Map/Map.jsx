@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import { EventCard } from './EventCard.jsx';
-import { NewEventCard } from './NewEvent.jsx';
+import { EventCard } from '../EventCard/EventCard.jsx';
+import { NewEventCard } from '../NewEvent/NewEvent.jsx';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import '../styles/App.css';
-import '../styles/NewEvent.css';
+import './Map.css';
 
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';

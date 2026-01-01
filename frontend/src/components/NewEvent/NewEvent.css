@@ -9,7 +9,6 @@
 input[type="datetime-local"] {
     width: 96%;
 }
-
-.leaflet-attribution-flag {
-    display: none !important;
+.placemark_element {
+    border: 1px black solid;
 }

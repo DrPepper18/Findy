@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: url("../assets/logoWithoutText.jpg") no-repeat;
+    background: url("../../assets/logoWithoutText.jpg") no-repeat;
     background-size: contain;
     background-position: left;    
     text-align: right;
@@ -10,7 +10,9 @@
     box-sizing: border-box;
     height: 11vh;
 }
-.mainPage {
-    display: flex;
+
+header{
     width: 100%;
+    border: black 1px solid;
+    font-family: Arial;
 }

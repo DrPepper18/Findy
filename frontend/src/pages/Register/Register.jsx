@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-//import Cookies from 'js-cookie';
-import '../styles/RegScreen.css';
-import {RegisterUser} from "../api";
+import { useState } from 'react';
+import './Register.css';
+import {RegisterUser} from "../../api";
 
 const RegScreen = () => {
     const [nickname, setNickname] = useState('');

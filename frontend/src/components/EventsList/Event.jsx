@@ -1,4 +1,6 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
+import './EventList.css'
+
 
 export const Event = ({ event }) => {
     const [joined, setJoined] = useState(false);
@@ -25,6 +27,4 @@ export const Event = ({ event }) => {
     )
 }
 
-const components = { Event };
-
-export default components;
+export default Event;

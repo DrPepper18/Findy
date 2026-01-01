@@ -1,4 +1,7 @@
-import {Event} from "./Event";
+import { Event } from "./Event";
+import './EventList.css'
+
+
 const EventsList = ({events}) => {
     return (
         <div id="CurrentEvents">
