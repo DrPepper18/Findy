@@ -1,3 +1,4 @@
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { RegScreen } from "./pages/Register/Register.jsx";
 import { LoginScreen } from "./pages/Login/Login.jsx";

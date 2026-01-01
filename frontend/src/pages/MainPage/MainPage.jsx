@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Map from '../../components/Map/Map.jsx';
 import EventsList from "../../components/EventsList/EventsList.jsx";
 import { Header } from "../../components/Header/Header.jsx";
@@ -15,7 +15,6 @@ const MainScreen = () => {
         const fetchEvents = async () => {
             try {
                 let data = await getEvents();
-                console.log(data.events);
                 setEvents(data.events || []);
             } catch (error) {
                 console.error('Error fetching events:', error);

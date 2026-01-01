@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Popup } from 'react-leaflet';
 import { EventJoinRequest, EventJoinCheck } from '../../api';
 import './EventCard.css'

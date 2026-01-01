@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Popup } from 'react-leaflet';
 import { NewEventRequest } from '../../api';
 import './NewEvent.css'

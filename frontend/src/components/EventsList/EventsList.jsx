@@ -1,3 +1,4 @@
+import React from 'react';
 import { Event } from "./Event";
 import './EventList.css'
 

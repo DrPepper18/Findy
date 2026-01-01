@@ -1,10 +1,11 @@
+import React from 'react';
 import './Header.css'
 
 export const Header = () => {
     return (
-    <header className="App-header">
-        <h3>Findy.</h3>
-        <p>Powered by Chinese Developers</p>
-    </header>
+        <header className="App-header">
+            <h3>Findy.</h3>
+            <p>Powered by Chinese Developers</p>
+        </header>
     )
 }
