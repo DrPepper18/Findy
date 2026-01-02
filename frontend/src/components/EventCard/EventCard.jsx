@@ -30,13 +30,36 @@ const EventCard = ({event}) => {
             alert("Не удалось записаться");
         }
     };
+    let ageLabel = "";
+    if (event.MinAge && event.MaxAge) {
+        ageLabel = `${event.MinAge}–${event.MaxAge} лет`;
+    } else if (event.MinAge) {
+        ageLabel = `от ${event.MinAge} лет`;
+    } else if (event.MaxAge) {
+        ageLabel = `до ${event.MaxAge} лет`;
+    }
+    const shareUrl = `${window.location.origin}/?id=${event.ID}`;
+
     return (
         <Popup>
             <h3>{event.Name}</h3>
-            <p>{event.DateTime}</p>
-            <p>{event.MinAge}-{event.MaxAge}. До {event.Capacity} человек</p>
+            <p>📅 {new Date(event.DateTime).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</p>
+            <p>👤 {ageLabel}{ageLabel && '. '}До {event.Capacity} человек</p>
             <input type="button" id="ToGoID" className="ToGoButton" value="Я приду!" disabled={isJoined} onClick={handleJoin}></input>
-            <p>{window.location.origin}/?id={event.ID}</p>
+            <div>
+                <small>🔗 </small>
+                <a 
+                    href={shareUrl} 
+                    style={{ fontSize: '11px', textDecoration: 'none', color: '#007bff' }}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        navigator.clipboard.writeText(shareUrl);
+                        alert("Скопировано!");
+                    }}
+                >
+                    {shareUrl.replace('http://', '').replace('https://', '')}
+                </a>
+            </div>
         </Popup>
     );
 }

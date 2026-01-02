@@ -26,7 +26,7 @@ const NewEventCard = ({position}) => {
             MaxAge: inputs.MaxAge ? parseInt(inputs.MaxAge) : null
         };
 
-        if (!(finalData.Name && finalData.DateTime)) {
+        if (!(finalData.Name && finalData.DateTime && finalData.Capacity)) {
             console.log(finalData);
             alert("Введите все данные");
         } else {
