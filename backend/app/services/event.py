@@ -1,8 +1,10 @@
 from app.models.models import User, Event, Records
 from app.models.database import async_session_maker
+from app.services.user import get_user_info
+from app.schemas import EventPostRequest
+from fastapi import HTTPException
 import sqlalchemy as db
 from sqlalchemy import or_, and_
-from app.schemas import EventJoinRequest, EventPostRequest
 from datetime import datetime
 
 
@@ -55,17 +57,32 @@ async def add_new_event(data: EventPostRequest):
         await session.commit()
 
 
-async def register_join(data: EventJoinRequest, userEmail: str):
+async def register_join(event_id: str, user_email: str):
     """
     INSERT INTO records ($EventID, $UserEmail)
     """
     async with async_session_maker() as session:
         new_record = Records(
-            Event=data.EventID,
-            User=userEmail
+            Event=event_id,
+            User=user_email
         )
         session.add(new_record)
         await session.commit()
+
+
+async def join_user_to_event(event_id: int, user_email: str):
+    user = await get_user_info(user_email)
+    event = await get_event_info(event_id)
+    event_load = await get_event_signups(event_id)
+
+    if not event:
+        raise HTTPException(status_code=404, detail="Событие не найдено")
+    if not (event.MinAge <= user.Age <= event.MaxAge):
+        raise HTTPException(status_code=403, detail="Возраст не подходит")
+    if not (event.Capacity > event_load):
+        raise HTTPException(status_code=403, detail="Мест нет")
+
+    await register_join(event_id, user.Email)        
 
 
 async def delete_expired_events():
