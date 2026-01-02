@@ -1,0 +1,20 @@
+.reg-screen {
+    position: absolute;
+    left: 40%;
+    top: 30%;
+    width: 20%;
+    border: 1px black solid;
+    border-radius: 20px;
+    padding: 10px;
+}
+
+.input-field {
+    border: 1px black solid;
+    width: 95%;
+}
+
+.register-button {
+    width: 97%;
+    border-radius: 10px;
+    cursor: pointer;
+}

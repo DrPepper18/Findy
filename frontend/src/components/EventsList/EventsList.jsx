@@ -1,4 +1,8 @@
-import {Event} from "./Event";
+import React from 'react';
+import { Event } from "./Event";
+import './EventList.css'
+
+
 const EventsList = ({events}) => {
     return (
         <div id="CurrentEvents">
@@ -7,7 +11,7 @@ const EventsList = ({events}) => {
                     <Event key={index} event={event}/>
                 )) :
                 <h2 style={{textAlign: 'center'}}>
-                    Здесь ничего нет. Будь первым!
+                    Здесь ничего нет.<br></br>Будь первым!
                 </h2>
             }
         </div>

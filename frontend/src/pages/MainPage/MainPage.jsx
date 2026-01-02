@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import YandexMap from './YandexMap.jsx';
-import EventsList from "./EventsList.jsx";
-import {Header} from "./Header.jsx";
-import {getEvents} from '../api'
+import Map from '../../components/Map/Map.jsx';
+import EventsList from "../../components/EventsList/EventsList.jsx";
+import { Header } from "../../components/Header/Header.jsx";
+import { getEvents } from '../../api.js'
+import './MainPage.css'
 
 const MainScreen = () => {
     const [events, setEvents] = useState([]);
@@ -28,10 +29,10 @@ const MainScreen = () => {
             <main>
                 <div className='mainPage'>
                     <EventsList events={events}/>
-                    <YandexMap events={events}/>
+                    <Map events={events}/>
                 </div>
             </main>
         </div>
     );
 }
-export default MainScreen
+export default MainScreen;

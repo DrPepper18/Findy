@@ -1,0 +1,21 @@
+#CurrentEvents{
+    width: 35%;
+    height: 89vh;
+    background-color:rgb(246, 246, 246);
+    border-left: 1px black solid;
+    border-right: 1px black solid;
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+.Event{
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    box-shadow: 1px 3px 10px gray;
+    border-radius: 20px;
+    padding: 3px 10px 1px 10px;
+    margin-bottom: 5px;
+    padding: 10px;
+}

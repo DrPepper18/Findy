@@ -6,3 +6,9 @@
 #datetimeDiv, #ageDiv, #capacityDiv {
     display: flex;
 }
+input[type="datetime-local"] {
+    width: 96%;
+}
+.placemark_element {
+    border: 1px black solid;
+}
