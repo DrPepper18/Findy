@@ -26,11 +26,6 @@ api.interceptors.response.use(
     }
 );
 
-export const getApiKey = async () => {
-    const response = await api.get('/yandexmap');
-    return response.data.api_key || "";
-};
-
 export const getEvents = async () => {
     const response = await api.post('/event/', {});
     return response.data;

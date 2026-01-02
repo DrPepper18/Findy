@@ -6,7 +6,6 @@ from contextlib import asynccontextmanager
 from app.routes import user, event
 from app.services.event import delete_expired_events
 from app.models.database import init_db
-from app.config import YANDEX_API
 
 
 @asynccontextmanager
@@ -39,11 +38,6 @@ app.include_router(event.router)
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
-
-
-@app.get("/yandexmap")
-async def get_api_key():
-    return {"api_key": YANDEX_API}
 
 
 if __name__ == "__main__":
