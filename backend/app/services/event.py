@@ -77,7 +77,7 @@ async def join_user_to_event(event_id: int, user_email: str):
 
     if not event:
         raise HTTPException(status_code=404, detail="Событие не найдено")
-    if not (event.MinAge <= user.Age <= event.MaxAge):
+    if not((not event.MinAge or event.MinAge <= user.Age) and (not event.MaxAge or user.Age <= event.MaxAge)):
         raise HTTPException(status_code=403, detail="Возраст не подходит")
     if not (event.Capacity > event_load):
         raise HTTPException(status_code=403, detail="Мест нет")

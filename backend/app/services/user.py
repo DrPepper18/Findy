@@ -44,17 +44,19 @@ async def login_check(data: LoginRequest) -> str:
         return jwttoken
     else:
         return False
+
     
-async def join_check(data: CheckJoinRequest, userEmail: str) -> bool:
+async def join_check(event_id: int, user_email: str) -> bool:
     async with async_session_maker() as session:
         query_select = db.select(Records).where(
-            (Records.Event == data.EventID) & 
-            (Records.User == userEmail)
+            (Records.Event == event_id) & 
+            (Records.User == user_email)
         )
         result = await session.execute(query_select)
         joined_data = result.scalars().first()
         return joined_data is not None
     
+
 async def get_user_info(email: str) -> User:
     """
     SELECT * FROM users WHERE Email = $email

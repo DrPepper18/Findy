@@ -27,7 +27,7 @@ api.interceptors.response.use(
 );
 
 export const getEvents = async () => {
-    const response = await api.post('/event/', {});
+    const response = await api.get('/event/', {});
     return response.data;
 };
 
@@ -76,6 +76,7 @@ export const EventJoinRequest = async (eventID) => {
 };
 
 export const EventJoinCheck = async (eventID) => {
-    const response = await api.post('/event/joincheck', {"EventID": eventID});
+    console.log(eventID);
+    const response = await api.get('/event/joincheck', {params: {"EventID": eventID}});
     return response.data.joined;
 }
