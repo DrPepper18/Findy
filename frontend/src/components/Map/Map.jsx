@@ -43,25 +43,48 @@ function MapEventsHandler({ setCenter }) {
     return null;
 }
 
-const Map = ({events}) => {
-
-    const eventsRef = useRef(events);
-    useEffect(() => {
-        eventsRef.current = events;
-    }, [events]);
-
+const Map = ({ events }) => {
+    const [map, setMap] = useState(null);
     const [mapCenter, setMapCenter] = useState(DEFAULT_CENTER);
+    const markerRefs = useRef({});
+    // Добавляем флаг, чтобы не "летать" по карте при каждом обновлении списка ивентов
+    const hasCenteredRef = useRef(false);
+
+    useEffect(() => {
+        // Ждем, пока карта проинициализируется и придут данные
+        if (!map || events.length === 0 || hasCenteredRef.current) return;
+
+        const params = new URLSearchParams(window.location.search);
+        const targetMarkerID = params.get('id');
+
+        if (targetMarkerID) {
+            const id = Number(targetMarkerID);
+            const event = events.find(e => e.ID === id);
+            const marker = markerRefs.current[id];
+
+            if (event && marker) {
+                hasCenteredRef.current = true; // Фиксируем, что первичный фокус выполнен
+                
+                // Сначала летим...
+                map.setView([event.Latitude, event.Longitude], 15, {
+                    animate: true,
+                });
+                marker.openPopup();
+            }
+        }
+    }, [events, map]); // Зависимости верны
     
     return (
         <div id="map">
             <MapContainer 
-            center={DEFAULT_CENTER} 
-            zoom={DEFAULT_ZOOM} 
-            style={{ height: "100%", width: "100%" }}
+                center={DEFAULT_CENTER} 
+                zoom={DEFAULT_ZOOM} 
+                ref={setMap} // Правильное получение инстанса L.Map
+                style={{ height: "100%", width: "100%" }}
             >
                 <TileLayer
-                attribution='&copy; OpenStreetMap'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; OpenStreetMap'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
                 <MapEventsHandler setCenter={setMapCenter} />
@@ -71,9 +94,15 @@ const Map = ({events}) => {
                 </Marker>
 
                 {events.map((event) => (
-                <Marker key={event.ID} position={[event.Latitude, event.Longitude]}>
-                    <EventCard event={event}/>
-                </Marker>
+                    <Marker
+                        key={event.ID}
+                        position={[event.Latitude, event.Longitude]}
+                        ref={(el) => {
+                            if (el) markerRefs.current[event.ID] = el;
+                        }}
+                    >
+                        <EventCard event={event}/>
+                    </Marker>
                 ))}
             </MapContainer>
         </div>

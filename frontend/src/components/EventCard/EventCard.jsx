@@ -36,6 +36,7 @@ const EventCard = ({event}) => {
             <p>{event.DateTime}</p>
             <p>{event.MinAge}-{event.MaxAge}. До {event.Capacity} человек</p>
             <input type="button" id="ToGoID" className="ToGoButton" value="Я приду!" disabled={isJoined} onClick={handleJoin}></input>
+            <p>{window.location.origin}/?id={event.ID}</p>
         </Popup>
     );
 }
