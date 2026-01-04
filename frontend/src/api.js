@@ -31,7 +31,7 @@ export const getEvents = async () => {
     return response.data;
 };
 
-export const RegisterUser = async (user) => {
+export const registerUser = async (user) => {
     try {
         const response = await api.post('/auth/register', user);
         localStorage.setItem('jwt', response.data.token);
@@ -42,7 +42,7 @@ export const RegisterUser = async (user) => {
     }
 };
 
-export const LoginCheck = async (email, password, setError) => {
+export const checkLogin = async (email, password, setError) => {
     try {
         const response = await api.post('/auth/login', { email, password });
         localStorage.setItem('jwt', response.data.token);
@@ -55,19 +55,18 @@ export const LoginCheck = async (email, password, setError) => {
     }
 };
 
-export const NewEventRequest = async (eventData) => {
+export const createEvent = async (eventData) => {
     try {
-        await api.post('/event/create', eventData);
+        await api.post('/event/', eventData);
         window.location.href = '/';
     } catch (error) {
         console.error('Event creation error:', error.response?.data || error.message);
     }
 };
 
-export const EventJoinRequest = async (eventID) => {
+export const joinEvent = async (event_id) => {
     try {
-        await api.post('/event/join', {"EventID": eventID});
-        alert('Вы успешно записаны!');
+        await api.post(`/event/${event_id}/join`);
     } catch (error) {
         const errorMessage = error.response?.data?.detail || "Произошла ошибка при записи";
         console.error('Event join error:', error.response?.data || error.message);
@@ -75,8 +74,7 @@ export const EventJoinRequest = async (eventID) => {
     } 
 };
 
-export const EventJoinCheck = async (eventID) => {
-    console.log(eventID);
-    const response = await api.get('/event/joincheck', {params: {"EventID": eventID}});
+export const checkEventJoinStatus = async (event_id) => {
+    const response = await api.get(`/event/${event_id}/join`);
     return response.data.joined;
 }

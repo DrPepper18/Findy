@@ -1,4 +1,4 @@
-.LoginPanel {
+.login-panel {
     margin-top: 30vh; 
     margin-inline: auto; 
     width: 20%; 
@@ -6,6 +6,10 @@
     border-radius: 20px; 
     padding: 10px;
 }
-.LoginPanel > input[type='button'] {
+.login-panel__input {
+    border: 1px black solid;
+    width: 95%;
+}
+.login-panel > input[type="button"] {
     width: 97%;
 }

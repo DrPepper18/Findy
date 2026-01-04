@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Register.css';
-import {RegisterUser} from "../../api";
+import {registerUser} from "../../api";
 
 const RegScreen = () => {
     const [nickname, setNickname] = useState('');
@@ -26,7 +26,7 @@ const RegScreen = () => {
         };
 
         try {
-            await RegisterUser(user);
+            await registerUser(user);
         } catch (error) {
             console.error('Error:', error);
         }
@@ -36,14 +36,14 @@ const RegScreen = () => {
         <div className="reg-screen">
             <h1>Findy. Join us!</h1>
             <input
-                className="input-field"
+                className="reg-screen__input"
                 placeholder="Nickname"
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
             />
             <br />
             <input
-                className="input-field"
+                className="reg-screen__input"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -52,14 +52,14 @@ const RegScreen = () => {
             <br />
             <input
                 type="password"
-                className="input-field"
+                className="reg-screen__input"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
             <br />
             <input
-                className="ToGoButton"
+                className="button button--to-go"
                 type="button"
                 value="Register"
                 onClick={handleRegister}

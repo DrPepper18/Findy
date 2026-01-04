@@ -12,29 +12,29 @@ class LoginRequest(BaseModel):
     password: str
 
 class CheckJoinRequest(BaseModel):
-    EventID: int
+    event_id: int
 
 
 class EventPostRequest(BaseModel):
-    Name: str
-    DateTime: datetime
-    Longitude: float
-    Latitude: float
-    Capacity: int
-    MinAge: int | None = None
-    MaxAge: int | None = None
+    name: str
+    datetime: datetime
+    longitude: float
+    latitude: float
+    capacity: int
+    min_age: int | None = None
+    max_age: int | None = None
 
     @model_validator(mode='after')
     def validate_ages(self):
-        if self.MinAge > self.MaxAge:
+        if self.min_age and self.max_age and self.min_age > self.max_age:
             raise ValueError('Минимальный возраст не может быть больше максимального')
         return self
     
     @model_validator(mode='after')
     def validate_future_date(self):
-        if self.DateTime.replace(tzinfo=None) < datetime.now():
+        if self.datetime.replace(tzinfo=None) < datetime.now():
             raise ValueError('Нельзя создать событие в прошлом')
         return self
 
 class EventJoinRequest(BaseModel):
-    EventID: int
+    event_id: int

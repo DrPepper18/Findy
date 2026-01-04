@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Popup } from 'react-leaflet';
-import { EventJoinRequest, EventJoinCheck } from '../../api';
+import { joinEvent, checkEventJoinStatus } from '../../api';
 import './EventCard.css'
 
 
@@ -10,7 +10,7 @@ const EventCard = ({event}) => {
     useEffect(() => {
         const checkStatus = async () => {
             try {
-                const joined = await EventJoinCheck(event.ID);
+                const joined = await checkEventJoinStatus(event.id);
                 setIsJoined(joined);
             } catch (err) {
                 console.error("Ошибка проверки статуса:", err);
@@ -18,11 +18,11 @@ const EventCard = ({event}) => {
         };
 
         checkStatus();
-    }, [event.ID]);
+    }, [event.id]);
 
     const handleJoin = async () => {
         try {
-            await EventJoinRequest(event.ID);
+            await joinEvent(event.id);
             setIsJoined(true);
             alert("Вы записаны!");
         } catch (error) {
@@ -31,21 +31,21 @@ const EventCard = ({event}) => {
         }
     };
     let ageLabel = "";
-    if (event.MinAge && event.MaxAge) {
-        ageLabel = `${event.MinAge}–${event.MaxAge} лет`;
-    } else if (event.MinAge) {
-        ageLabel = `от ${event.MinAge} лет`;
-    } else if (event.MaxAge) {
-        ageLabel = `до ${event.MaxAge} лет`;
+    if (event.min_age && event.max_age) {
+        ageLabel = `${event.min_age}-${event.max_age} лет`;
+    } else if (event.min_age) {
+        ageLabel = `от ${event.min_age} лет`;
+    } else if (event.max_age) {
+        ageLabel = `до ${event.max_age} лет`;
     }
-    const shareUrl = `${window.location.origin}/?id=${event.ID}`;
+    const shareUrl = `${window.location.origin}/?id=${event.id}`;
 
     return (
         <Popup>
-            <h3>{event.Name}</h3>
-            <p>📅 {new Date(event.DateTime).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</p>
-            <p>👤 {ageLabel}{ageLabel && '. '}До {event.Capacity} человек</p>
-            <input type="button" id="ToGoID" className="ToGoButton" value="Я приду!" disabled={isJoined} onClick={handleJoin}></input>
+            <h3>{event.name}</h3>
+            <p>📅 {new Date(event.datetime).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</p>
+            <p>👤 {ageLabel}{ageLabel && '. '}До {event.capacity} человек</p>
+            <input type="button" id="ToGoID" className="button button--to-go" value="Я приду!" disabled={isJoined} onClick={handleJoin}></input>
             <div>
                 <small>🔗 </small>
                 <a 

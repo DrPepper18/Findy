@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LoginCheck } from "../../api"
+import { checkLogin } from "../../api"
 import './Login.css'
 
 
@@ -11,14 +11,14 @@ const LoginScreen = () => {
 
 	const handleLogin = () => {
 		setError('');
-		LoginCheck(email, password, setError);
+		checkLogin(email, password, setError);
 	};
 
 	return (
-		<div className='LoginPanel'>
+		<div className='login-panel'>
 			<h1>Findy. Log in</h1>
 			<input
-				className='input-field'
+				className='login-panel__input'
 				placeholder="E-mail"
 				value={email}
 				onChange={(e) => setEmail(e.target.value)}
@@ -26,7 +26,7 @@ const LoginScreen = () => {
 			<br />
 			<input
 				type="password"
-				className='input-field'
+				className='login-panel__input'
 				placeholder="Password"
 				value={password}
 				onChange={(e) => setPassword(e.target.value)}
@@ -34,7 +34,7 @@ const LoginScreen = () => {
 			<br />
 			{error && <p style={{color: 'red'}}>{error}</p>}
 			<input
-				className='ToGoButton'
+				className='button button--to-go'
 				type="button"
 				value="Log in"
 				onClick={handleLogin}
@@ -48,4 +48,4 @@ const LoginScreen = () => {
 	);
 };
 
-export { LoginScreen, LoginCheck };
+export { LoginScreen };

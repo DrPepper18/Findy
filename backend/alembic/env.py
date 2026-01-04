@@ -8,11 +8,15 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from app.models.models import Base
-import app.models.models
+
+from dotenv import load_dotenv
+load_dotenv()
 
 config = context.config
 
 database_url = os.getenv("DATABASE_URL")
+database_url = 'postgresql+psycopg2://'+database_url.split('//')[1]
+
 if not database_url:
     raise ValueError("DATABASE_URL environment variable is not set")
 

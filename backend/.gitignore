@@ -120,8 +120,6 @@ cython_debug/
 
 # FastAPI/FastAPI specific
 alembic.ini
-alembic/
-migrations/
 
 # SQLAlchemy
 *.db
@@ -150,10 +148,6 @@ temp/
 # Security
 secrets.py
 secret_key.txt
-
-# Database migrations (если используете Alembic)
-/alembic/versions/*.py
-!alembic/versions/__init__.py
 
 # Pycharm
 .idea/

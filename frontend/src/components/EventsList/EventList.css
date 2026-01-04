@@ -1,4 +1,4 @@
-#CurrentEvents{
+#event-list{
     width: 35%;
     height: 89vh;
     background-color:rgb(246, 246, 246);
@@ -9,7 +9,7 @@
     box-sizing: border-box;
     overflow-y: auto;
 }
-.Event{
+.event-list__card{
     display: flex;
     justify-content: space-between;
     background-color: white;

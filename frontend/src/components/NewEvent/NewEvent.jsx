@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Popup } from 'react-leaflet';
-import { NewEventRequest } from '../../api';
+import { createEvent } from '../../api';
 import './NewEvent.css'
 
 
@@ -8,30 +8,30 @@ import './NewEvent.css'
 const NewEventCard = ({position}) => {
 
     const [inputs, setInputs] = useState({
-        Name: "",
-        DateTime: "",
-        Capacity: 5,
-        MinAge: "",
-        MaxAge: ""
+        name: "",
+        dateTime: "",
+        capacity: 5,
+        minAge: "",
+        maxAge: ""
     });
 
     const handleCreate = async () => {       
         const finalData = {
-            Name: inputs.Name,
-            DateTime: inputs.DateTime,
-            Latitude: parseFloat(position[0]),
-            Longitude: parseFloat(position[1]),
-            Capacity: parseInt(inputs.Capacity),
-            MinAge: inputs.MinAge ? parseInt(inputs.MinAge) : null,
-            MaxAge: inputs.MaxAge ? parseInt(inputs.MaxAge) : null
+            name: inputs.name,
+            datetime: inputs.dateTime,
+            latitude: parseFloat(position[0]),
+            longitude: parseFloat(position[1]),
+            capacity: parseInt(inputs.capacity),
+            min_age: inputs.minAge ? parseInt(inputs.minAge) : null,
+            max_age: inputs.maxAge ? parseInt(inputs.maxAge) : null
         };
 
-        if (!(finalData.Name && finalData.DateTime && finalData.Capacity)) {
+        if (!(finalData.name && finalData.datetime && finalData.capacity)) {
             console.log(finalData);
             alert("Введите все данные");
         } else {
             console.log("Отправка данных:", finalData);
-            await NewEventRequest(finalData);
+            await createEvent(finalData);
             alert("Событие создано!");
         }
     };
@@ -45,26 +45,26 @@ const NewEventCard = ({position}) => {
     return (
         <Popup>
             <form id="NewEventForm" style={{width: '250px'}}>
-                <input className="placemark_element" name="Name" placeholder="Название" value={inputs.Name} onChange={handleChange}/>
-                <input className="placemark_element" name="DateTime" type="datetime-local" value={inputs.DateTime} onChange={handleChange}/>
+                <input className="event-card__input" name="name" placeholder="Название" value={inputs.name} onChange={handleChange}/>
+                <input className="event-card__input" name="dateTime" type="datetime-local" value={inputs.dateTime} onChange={handleChange}/>
                 <div id="capacityDiv">
-                    <input className="placemark_element" name="Capacity" type="number"
-                        min="1" max="16" value={inputs.Capacity} onChange={handleChange}
+                    <input className="event-card__input" name="capacity" type="number"
+                        min="1" max="16" value={inputs.capacity} onChange={handleChange}
                     />
                     <h3>человек</h3>
                 </div>
                 <div id="ageDiv">
                     <h3>от</h3>
-                    <input className="placemark_element" name="MinAge" type="number" 
-                        min="0" max="100" value={inputs.MinAge} onChange={handleChange}
+                    <input className="event-card__input" name="minAge" type="number" 
+                        min="0" max="100" value={inputs.minAge} onChange={handleChange}
                     />
                     <h3>до</h3>
-                    <input className="placemark_element" name="MaxAge" type="number" 
-                        min="0" max="100" value={inputs.MaxAge} onChange={handleChange}
+                    <input className="event-card__input" name="maxAge" type="number" 
+                        min="0" max="100" value={inputs.maxAge} onChange={handleChange}
                     />
                     <h3>лет</h3>
                 </div>
-                <input id="newEventButton" type="button" className="ToGoButton"
+                <input id="newEventButton" type="button" className="button button--to-go"
                     value="Начать созыв!" onClick={handleCreate}
                 />
             </form>

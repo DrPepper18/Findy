@@ -9,6 +9,6 @@
 input[type="datetime-local"] {
     width: 96%;
 }
-.placemark_element {
+.event-card__input {
     border: 1px black solid;
 }

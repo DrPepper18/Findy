@@ -59,27 +59,26 @@ const Map = ({ events }) => {
 
         if (targetMarkerID) {
             const id = Number(targetMarkerID);
-            const event = events.find(e => e.ID === id);
+            const event = events.find(e => e.id === id);
             const marker = markerRefs.current[id];
 
             if (event && marker) {
-                hasCenteredRef.current = true; // Фиксируем, что первичный фокус выполнен
+                hasCenteredRef.current = true;
                 
-                // Сначала летим...
-                map.setView([event.Latitude, event.Longitude], 15, {
+                map.setView([event.latitude, event.longitude], 15, {
                     animate: true,
                 });
                 marker.openPopup();
             }
         }
-    }, [events, map]); // Зависимости верны
+    }, [events, map]);
     
     return (
         <div id="map">
             <MapContainer 
                 center={DEFAULT_CENTER} 
                 zoom={DEFAULT_ZOOM} 
-                ref={setMap} // Правильное получение инстанса L.Map
+                ref={setMap}
                 style={{ height: "100%", width: "100%" }}
             >
                 <TileLayer
@@ -95,10 +94,10 @@ const Map = ({ events }) => {
 
                 {events.map((event) => (
                     <Marker
-                        key={event.ID}
-                        position={[event.Latitude, event.Longitude]}
+                        key={event.id}
+                        position={[event.latitude, event.longitude]}
                         ref={(el) => {
-                            if (el) markerRefs.current[event.ID] = el;
+                            if (el) markerRefs.current[event.id] = el;
                         }}
                     >
                         <EventCard event={event}/>

@@ -1,5 +1,5 @@
 from fastapi import HTTPException, APIRouter
-from app.services.user import register_user, login_check
+from app.services.user import register_user, authenticate_user
 from app.schemas import RegisterRequest, LoginRequest
 
 
@@ -14,8 +14,8 @@ async def register(data: RegisterRequest):
 
 @router.post("/login")
 async def login(data: LoginRequest):
-    jwt_token = await login_check(data)
+    jwt_token = await authenticate_user(data)
     if jwt_token:
-        return {"message": "Registration successful", "token": jwt_token}
+        return {"message": "Login successful", "token": jwt_token}
     else:
         raise HTTPException(status_code=401, detail="Invalid email or password")

@@ -27,7 +27,7 @@ const MainScreen = () => {
         <div className="App">
             <Header/>
             <main>
-                <div className='mainPage'>
+                <div className='main-page'>
                     <EventsList events={events}/>
                     <Map events={events}/>
                 </div>

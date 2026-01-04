@@ -5,7 +5,7 @@ import './EventList.css'
 
 const EventsList = ({events}) => {
     return (
-        <div id="CurrentEvents">
+        <div id="event-list">
             {events.length > 0 ? 
                 events.map((event, index) => (
                     <Event key={index} event={event}/>

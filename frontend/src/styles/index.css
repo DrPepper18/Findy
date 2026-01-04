@@ -1,28 +1,25 @@
-.ToGoButton {
+.button {
     width: auto;
     padding: 5px 20px 5px 20px;
     font-size: 20px;
-    background-color: green;
     color: white;
     border-radius: 10px;
 }
-    .ToGoButton:hover {
+
+.button--to-go {
+    background-color: green;
+}
+    .button--to-go:hover {
         background-color: rgb(2, 182, 182);
     }
-    .ToGoButton:disabled {
+    .button--to-go:disabled {
         opacity: 25%;
         background-color: gray;
     }
 
-.NegativeButton {
-    width: auto;
-    padding: 5px 20px 5px 20px;
-    font-size: 20px;
+.button--negative {
     background-color: rgb(206, 47, 47);
-    color: white;
-    border-radius: 10px;
 }
-    .NegativeButton:hover {
-        cursor: pointer;
+    .button--negative:hover {
         background-color: rgb(255, 94, 0);
     }

@@ -22,51 +22,54 @@ def upgrade():
     op.create_table(
         'records_new',
         sa.Column('ID', sa.BigInteger(), 
-                 sa.Identity(start=1, increment=1),
-                 primary_key=True),
+                  sa.Identity(start=1, increment=1),
+                  primary_key=True),
         sa.Column('Event', sa.BigInteger(), 
-                 sa.ForeignKey('events.ID'), 
-                 nullable=False),
+                  sa.ForeignKey('events.ID'), 
+                  nullable=False),
         sa.Column('User', sa.String(), 
-                 sa.ForeignKey('users.Email'), 
-                 nullable=False),
-        sa.UniqueConstraint('Event', 'User', name='unique_record')
+                  sa.ForeignKey('users.Email'), 
+                  nullable=False),
+
+        sa.UniqueConstraint('Event', 'User', name='unique_record_temp')
     )
     
     op.execute("""
         INSERT INTO records_new ("Event", "User")
         SELECT DISTINCT ON ("Event", "User") 
                "Event", 
-               COALESCE("User", 'unknown@example.com') as "User"
+               COALESCE("User", 'unknown@example.com')
         FROM records
-        WHERE "User" IS NOT NULL  -- если есть записи без пользователя
+        WHERE "User" IS NOT NULL
         ORDER BY "Event", "User"
     """)
     
     op.drop_table('records')
-    
     op.rename_table('records_new', 'records')
+
+    op.execute('ALTER TABLE records RENAME CONSTRAINT unique_record_temp TO unique_record')
 
 
 def downgrade():
     op.create_table(
         'records_old',
         sa.Column('Event', sa.BigInteger(), 
-                 sa.ForeignKey('events.ID'), 
-                 primary_key=True),
+                  sa.ForeignKey('events.ID'), 
+                  primary_key=True),
         sa.Column('User', sa.String(), 
-                 sa.ForeignKey('users.Email'), 
-                 nullable=True),
-        sa.UniqueConstraint('Event', 'User', name='unique_record')
+                  sa.ForeignKey('users.Email'), 
+                  nullable=True),
+        sa.UniqueConstraint('Event', 'User', name='unique_record_downgrade')
     )
     
     op.execute("""
         INSERT INTO records_old ("Event", "User")
         SELECT DISTINCT ON ("Event") "Event", "User"
         FROM records
-        ORDER BY "Event", "ID"  -- Берем запись с наименьшим ID для каждого Event
+        ORDER BY "Event", "ID"
     """)
     
     op.drop_table('records')
-    
     op.rename_table('records_old', 'records')
+    
+    op.execute('ALTER TABLE records RENAME CONSTRAINT unique_record_downgrade TO unique_record')
