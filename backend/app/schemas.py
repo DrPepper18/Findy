@@ -3,9 +3,10 @@ from pydantic import BaseModel, EmailStr, model_validator
 
 
 class RegisterRequest(BaseModel):
-    name: str
     email: EmailStr
     password: str
+    name: str
+    age: int = 18
 
 class LoginRequest(BaseModel):
     email: EmailStr
