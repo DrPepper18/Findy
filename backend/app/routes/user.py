@@ -7,7 +7,7 @@ from app.schemas import RegisterRequest, LoginRequest
 router = APIRouter(prefix='/auth')
 
 
-@router.post("/register")
+@router.post("/register", status_code=201)
 async def register(data: RegisterRequest, db: AsyncSession = Depends(get_db)):
     jwt_token = await register_user(data=data, session=db)
     return {"message": "Registration successful", "token": jwt_token}

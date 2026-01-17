@@ -19,7 +19,7 @@ async def get_events(payload = Depends(get_user_from_jwt),
     return {"message": "Here will be your events", "events": eventlist}
 
 
-@router.post("/")
+@router.post("/", status_code=201)
 async def create_event(data: EventPostRequest, 
                        payload = Depends(get_user_from_jwt), 
                        db: AsyncSession = Depends(get_db)):

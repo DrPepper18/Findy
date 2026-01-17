@@ -79,7 +79,7 @@ async def join_user_to_event(event_id: int, user_email: str, session: AsyncSessi
     if not((not event.min_age or event.min_age <= user.age) and (not event.max_age or user.age <= event.max_age)):
         raise HTTPException(status_code=403, detail="Возраст не подходит")
     if not (event.capacity > event_load):
-        raise HTTPException(status_code=403, detail="Мест нет")
+        raise HTTPException(status_code=409, detail="Мест нет")
 
     await register_join(event_id=event_id, user_email=user_email, session=session)        
 

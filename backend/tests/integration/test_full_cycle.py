@@ -1,11 +1,9 @@
 import pytest
-from httpx import AsyncClient, ASGITransport
-from app.main import app
+from datetime import datetime, timedelta
 
 
 @pytest.mark.asyncio
 async def test_full_cycle(client):
-    # Test users
     users = [
         {"email": "owner@gmail.com", "password": "imaboss", "name": "Owner", "age": 30},
         {"email": "latebird@yandex.ru", "password": "ihavetime", "name": "Late bird", "age": 20},
@@ -14,11 +12,11 @@ async def test_full_cycle(client):
 
     # Registration
     response = await client.post('/api/v1/auth/register', json=users[0])
-    assert response.status_code == 200
+    assert response.status_code == 201
     response = await client.post('/api/v1/auth/register', json=users[1])
-    assert response.status_code == 200
+    assert response.status_code == 201
     response = await client.post('/api/v1/auth/register', json=users[2])
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     # Authentication (Owner)
     response = await client.post('/api/v1/auth/login', json={
@@ -34,7 +32,7 @@ async def test_full_cycle(client):
         "name": "Настолки в Парке Горького",
         "latitude": 55.727050,
         "longitude": 37.600500,
-        "datetime": "2026-05-01T18:00:00Z",
+        "datetime": (datetime.now() + timedelta(days=1)).isoformat(),
         "min_age": 18,
         "max_age": None,
         "capacity": 1
@@ -43,8 +41,7 @@ async def test_full_cycle(client):
                                     headers={"Authorization": f"Bearer {token}"}, 
                                     json=event
     )
-    print(response.json())
-    assert response.status_code == 200
+    assert response.status_code == 201
     event_id = response.json()["event_id"]
     assert event_id
     

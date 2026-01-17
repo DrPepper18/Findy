@@ -26,6 +26,12 @@ class EventPostRequest(BaseModel):
     max_age: int | None = None
 
     @model_validator(mode='after')
+    def validate_name(self):
+        if not(self.name and self.latitude and self.longitude and self.capacity):
+            raise ValueError('Не все поля заполнены')
+        return self
+    
+    @model_validator(mode='after')
     def validate_ages(self):
         if self.min_age and self.max_age and self.min_age > self.max_age:
             raise ValueError('Минимальный возраст не может быть больше максимального')

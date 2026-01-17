@@ -41,11 +41,15 @@ async def register_user(data: RegisterRequest, session: AsyncSession) -> str:
 
 async def get_password_hash(email: str, session: AsyncSession) -> bytes:
     """
-    SELECT passwordhash FROM users WHERE Email == $email
+    SELECT passwordhash FROM users WHERE email == $email
     """
     query_select = db.select(User).where(User.email == email)
     result = await session.execute(query_select)
     user_data = result.scalars().first()
+
+    if not user_data:
+        raise HTTPException(404, "Not found")
+
     return user_data.password_hash
 
 
