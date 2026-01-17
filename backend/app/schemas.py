@@ -3,9 +3,10 @@ from pydantic import BaseModel, EmailStr, model_validator
 
 
 class RegisterRequest(BaseModel):
-    name: str
     email: EmailStr
     password: str
+    name: str
+    age: int = 18
 
 class LoginRequest(BaseModel):
     email: EmailStr
@@ -24,6 +25,12 @@ class EventPostRequest(BaseModel):
     min_age: int | None = None
     max_age: int | None = None
 
+    @model_validator(mode='after')
+    def validate_name(self):
+        if not(self.name and self.latitude and self.longitude and self.capacity):
+            raise ValueError('Не все поля заполнены')
+        return self
+    
     @model_validator(mode='after')
     def validate_ages(self):
         if self.min_age and self.max_age and self.min_age > self.max_age:

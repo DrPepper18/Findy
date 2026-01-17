@@ -16,6 +16,10 @@ async def lifespan(app):
     yield
     
     cleanup_task.cancel()
+    try:
+        await cleanup_task
+    except asyncio.CancelledError:
+        pass
 
 async def periodic_cleanup():
     while True:

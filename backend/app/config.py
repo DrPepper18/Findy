@@ -9,5 +9,7 @@ if is_local_development():
     from dotenv import load_dotenv
     load_dotenv()
 
-DATABASE_URL = os.getenv('DATABASE_URL') 
+
+DATABASE_URL = os.getenv('DATABASE_URL')
+TEST_DATABASE_URL = os.getenv('TEST_DATABASE_URL')
 SECRET_TOKEN = os.getenv('SECRET_TOKEN')
