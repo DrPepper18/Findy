@@ -33,8 +33,8 @@ class Event(Base):
     capacity = Column(Integer())
 
 
-class Records(Base):
-    __tablename__ = "records"
+class Booking(Base):
+    __tablename__ = "bookings"
     id = Column(BigInteger(), primary_key=True, autoincrement=True)
     event_id = Column(ForeignKey(Event.id))
     user_email = Column(ForeignKey(User.email))

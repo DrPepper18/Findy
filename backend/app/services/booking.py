@@ -1,12 +1,9 @@
-from app.models.models import User, Event, Records
+from app.models.models import Booking
 from app.models.database import AsyncSession
 from app.services.user import get_user_info
 from app.services.event import get_event_info
-from app.schemas import EventPostRequest
 from fastapi import HTTPException
 import sqlalchemy as db
-from sqlalchemy import or_, and_
-from datetime import datetime
 
 
 async def get_event_signups(id: int, session: AsyncSession) -> int:
@@ -14,7 +11,7 @@ async def get_event_signups(id: int, session: AsyncSession) -> int:
     SELECT COUNT(*) FROM records
     WHERE event_id = $event_id
     """
-    query_select = db.select(db.func.count(Records.id)).where(Records.event_id == id)
+    query_select = db.select(db.func.count(Booking.id)).where(Booking.event_id == id)
     result = await session.execute(query_select)
     event_signups_count = result.scalar()
     return event_signups_count
@@ -25,9 +22,9 @@ async def get_join_status(event_id: int, user_email: str, session: AsyncSession)
     SELECT * FROM records
     WHERE event_id = $event_id AND user_email = $user_email
     """
-    query_select = db.select(Records).where(
-        (Records.event_id == event_id) & 
-        (Records.user_email == user_email)
+    query_select = db.select(Booking).where(
+        (Booking.event_id == event_id) & 
+        (Booking.user_email == user_email)
     )
     result = await session.execute(query_select)
     joined_data = result.scalars().first()
@@ -38,7 +35,7 @@ async def register_join(event_id: str, user_email: str, session: AsyncSession) -
     """
     INSERT INTO records ($event_id, $user_email)
     """
-    new_record = Records(
+    new_record = Booking(
         event_id=event_id,
         user_email=user_email
     )
@@ -65,9 +62,9 @@ async def cancel_join_to_event(event_id: int, user_email: str, session: AsyncSes
     """
     DELETE FROM records WHERE event_id = $event_id AND user_email = $user_email
     """
-    delete_record_query = db.delete(Records).where(
-        (Records.user_email == user_email) & 
-        (Records.event_id == event_id)
+    delete_record_query = db.delete(Booking).where(
+        (Booking.user_email == user_email) & 
+        (Booking.event_id == event_id)
     )
     await session.execute(delete_record_query)
     await session.commit()

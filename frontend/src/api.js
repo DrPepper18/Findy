@@ -28,6 +28,7 @@ api.interceptors.response.use(
 
 export const getEvents = async () => {
     const response = await api.get('/event/', {});
+    console.log(response.data);
     return response.data;
 };
 

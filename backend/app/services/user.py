@@ -1,4 +1,4 @@
-from app.models.models import User, Records
+from app.models.models import User
 from app.models.database import AsyncSession
 from app.crypt_module import create_jwt_token, create_password_hash, is_password_correct
 from app.schemas import RegisterRequest, LoginRequest
@@ -41,7 +41,7 @@ async def register_user(data: RegisterRequest, session: AsyncSession) -> str:
 
 async def get_password_hash(email: str, session: AsyncSession) -> bytes:
     """
-    SELECT passwordhash FROM users WHERE email == $email
+    SELECT password_hash FROM users WHERE email == $email
     """
     query_select = db.select(User).where(User.email == email)
     result = await session.execute(query_select)

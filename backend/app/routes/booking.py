@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from app.models.database import AsyncSession, get_db
-from app.services.bookings import (
+from app.services.booking import (
     get_join_status,
     join_user_to_event,
     cancel_join_to_event

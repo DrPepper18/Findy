@@ -1,8 +1,6 @@
-from app.models.models import User, Event, Records
+from app.models.models import User, Event, Booking
 from app.models.database import AsyncSession
-from app.services.user import get_user_info
 from app.schemas import EventPostRequest
-from fastapi import HTTPException
 import sqlalchemy as db
 from sqlalchemy import or_, and_
 from datetime import datetime
@@ -10,20 +8,36 @@ from datetime import datetime
 
 async def get_all_events(user_data: User, session: AsyncSession) -> list:
     """
-    SELECT * FROM events
-    WHERE datetime >= NOW()
-    AND ($age >= events.min_age OR events.min_age IS NULL)
-    AND ($age <= events.max_age OR events.max_age IS NULL)
+    SELECT *, COUNT(records.user_email) FROM events
+    JOIN records ON events.id = records.event_id
+    WHERE events.datetime >= NOW()
+        AND ($age >= events.min_age OR events.min_age IS NULL)
+        AND ($age <= events.max_age OR events.max_age IS NULL)
+    GROUP BY records.user_email
     """
-    query_select = db.select(Event).where(
-        and_(
-            Event.datetime >= datetime.now(),
-            or_(user_data.age >= Event.min_age, Event.min_age.is_(None)),
-            or_(user_data.age <= Event.max_age, Event.max_age.is_(None))
+    query_select = (
+        db.select(
+            Event, 
+            db.func.count(Booking.id).label("participants_count")
         )
+        .outerjoin(Booking)
+        .where(
+            and_(
+                Event.datetime >= datetime.now(),
+                or_(user_data.age >= Event.min_age, Event.min_age.is_(None)),
+                or_(user_data.age <= Event.max_age, Event.max_age.is_(None))
+            )
+        )
+        .group_by(Event.id)
     )
     result = await session.execute(query_select)
-    return result.scalars().fetchall()
+
+    events = []
+    for event, count in result.all():
+        event.participants_count = count
+        events.append(event)
+
+    return events
 
 
 async def add_new_event(data: EventPostRequest, session: AsyncSession) -> int:
@@ -55,8 +69,8 @@ async def delete_expired_events(session: AsyncSession) -> None:
     DELETE FROM events
     WHERE events.datetime < NOW()
     """
-    delete_records_query = db.delete(Records).where(
-        Records.Event.in_(db.select(Event.id).where(Event.datetime < datetime.now()))
+    delete_records_query = db.delete(Booking).where(
+        Booking.Event.in_(db.select(Event.id).where(Event.datetime < datetime.now()))
     )
     delete_events_query = db.delete(Event).where(Event.datetime < datetime.now())
     await session.execute(delete_records_query)

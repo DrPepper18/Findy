@@ -3,28 +3,36 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from app.routes import user, event, bookings
+from app.routes import user, event
 from app.services.event import delete_expired_events
-from app.models.database import init_db
+from app.models.database import init_db, async_session_maker
+from app.routes import booking
+
+
+async def periodic_cleanup():
+    while True:
+        try:
+            async with async_session_maker() as session:
+                await delete_expired_events(session=session)
+                await session.commit()
+        except Exception as e:
+            print(f"Cleanup error: {e}")
+        
+        await asyncio.sleep(6 * 60 * 60)
 
 
 @asynccontextmanager
-async def lifespan(app):
+async def lifespan(app: FastAPI):
     await init_db()
     cleanup_task = asyncio.create_task(periodic_cleanup())
-    
+
     yield
-    
+
     cleanup_task.cancel()
     try:
         await cleanup_task
     except asyncio.CancelledError:
         pass
-
-async def periodic_cleanup():
-    while True:
-        await delete_expired_events()
-        await asyncio.sleep(6 * 60 * 60)
 
 
 app = FastAPI(root_path='/api/v1', lifespan=lifespan)
@@ -37,7 +45,7 @@ app.add_middleware(
 )
 app.include_router(user.router)
 app.include_router(event.router)
-app.include_router(bookings.router)
+app.include_router(booking.router)
 
 
 @app.get("/health")
