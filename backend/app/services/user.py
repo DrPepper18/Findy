@@ -63,20 +63,6 @@ async def authenticate_user(data: LoginRequest, session: AsyncSession) -> str:
         return jwttoken
     else:
         return False
-
-    
-async def get_join_status(event_id: int, user_email: str, session: AsyncSession) -> bool:
-    """
-    SELECT * FROM records
-    WHERE event_id = $event_id AND user_email = $user_email
-    """
-    query_select = db.select(Records).where(
-        (Records.event_id == event_id) & 
-        (Records.user_email == user_email)
-    )
-    result = await session.execute(query_select)
-    joined_data = result.scalars().first()
-    return joined_data is not None
     
 
 async def get_user_info(email: str, session: AsyncSession) -> User:

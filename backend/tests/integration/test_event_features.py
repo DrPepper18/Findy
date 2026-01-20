@@ -65,5 +65,5 @@ async def test_event_join(client):
     ]
 
     for param in parameters:  
-        response = await client.post(f'/api/v1/event/{event_id}/join', headers={"Authorization": f"Bearer {param["token"]}"})
+        response = await client.post(f'/api/v1/book/{event_id}', headers={"Authorization": f"Bearer {param["token"]}"})
         assert response.status_code == param["status_code"]

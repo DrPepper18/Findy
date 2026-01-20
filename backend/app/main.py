@@ -3,7 +3,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from app.routes import user, event
+from app.routes import user, event, bookings
 from app.services.event import delete_expired_events
 from app.models.database import init_db
 
@@ -37,6 +37,7 @@ app.add_middleware(
 )
 app.include_router(user.router)
 app.include_router(event.router)
+app.include_router(bookings.router)
 
 
 @app.get("/health")

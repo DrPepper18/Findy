@@ -29,3 +29,9 @@ python -m app.main
 cd frontend
 npm start
 ```
+
+### Запуск тестов (со статистикой)
+```
+cd backend/tests
+pytest --duration=0
+```

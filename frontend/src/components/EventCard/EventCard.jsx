@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Popup } from 'react-leaflet';
-import { joinEvent, checkEventJoinStatus } from '../../api';
+import { joinEvent, checkEventJoinStatus, cancelJoin } from '../../api';
 import './EventCard.css'
 
 
@@ -22,9 +22,16 @@ const EventCard = ({event}) => {
 
     const handleJoin = async () => {
         try {
-            await joinEvent(event.id);
-            setIsJoined(true);
-            alert("Вы записаны!");
+            if (!isJoined) {
+                await joinEvent(event.id);
+                setIsJoined(true);
+                alert("Вы записаны!");
+            } else {
+                await cancelJoin(event.id);
+                setIsJoined(false);
+                alert("Вы отказались от события...");
+            }
+            
         } catch (error) {
             console.error("Ошибка при записи:", error);
             alert("Не удалось записаться");
@@ -39,13 +46,16 @@ const EventCard = ({event}) => {
         ageLabel = `до ${event.max_age} лет`;
     }
     const shareUrl = `${window.location.origin}/?id=${event.id}`;
+    const buttonStyle = `button button--${isJoined ? 'negative' : 'to-go'}`;
 
     return (
         <Popup>
             <h3>{event.name}</h3>
             <p>📅 {new Date(event.datetime).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</p>
             <p>👤 {ageLabel}{ageLabel && '. '}До {event.capacity} человек</p>
-            <input type="button" id="ToGoID" className="button button--to-go" value="Я приду!" disabled={isJoined} onClick={handleJoin}></input>
+            <input type="button" id="ToGoID"
+            className={buttonStyle} value={isJoined ? "Я не приду..." : "Я приду!"} 
+            onClick={handleJoin}/>
             <div>
                 <small>🔗 </small>
                 <a 

@@ -55,9 +55,9 @@ async def test_full_cycle(client):
     assert token
 
     # Join the event (failed: too young)
-    response = await client.post(f'/api/v1/event/{event_id}/join', headers={"Authorization": f"Bearer {token}"})
+    response = await client.post(f'/api/v1/book/{event_id}', headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 403
 
     # Check participation (expect: false)
-    response = await client.get(f'/api/v1/event/{event_id}/join', headers={"Authorization": f"Bearer {token}"})
+    response = await client.get(f'/api/v1/book/{event_id}', headers={"Authorization": f"Bearer {token}"})
     assert response.json()["joined"] == False

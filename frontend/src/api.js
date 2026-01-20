@@ -66,7 +66,17 @@ export const createEvent = async (eventData) => {
 
 export const joinEvent = async (event_id) => {
     try {
-        await api.post(`/event/${event_id}/join`);
+        await api.post(`/book/${event_id}`);
+    } catch (error) {
+        const errorMessage = error.response?.data?.detail || "Произошла ошибка при записи";
+        console.error('Event join error:', error.response?.data || error.message);
+        alert(errorMessage);
+    } 
+};
+
+export const cancelJoin = async (event_id) => {
+    try {
+        await api.delete(`/book/${event_id}`);
     } catch (error) {
         const errorMessage = error.response?.data?.detail || "Произошла ошибка при записи";
         console.error('Event join error:', error.response?.data || error.message);
@@ -75,6 +85,6 @@ export const joinEvent = async (event_id) => {
 };
 
 export const checkEventJoinStatus = async (event_id) => {
-    const response = await api.get(`/event/${event_id}/join`);
+    const response = await api.get(`/book/${event_id}`);
     return response.data.joined;
 }
