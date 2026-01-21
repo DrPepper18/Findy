@@ -1,0 +1,13 @@
+.sidebar {
+    height: 89vh;
+    background-color:rgb(246, 246, 246);
+    border-left: 1px black solid;
+    border-right: 1px black solid;
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+.sidebar--open { width: 35vw; }
+.sidebar--closed { width: 4vw; }
+.sidebar--closed > .sidebar__content { display: none; }

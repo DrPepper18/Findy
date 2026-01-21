@@ -6,7 +6,7 @@ const RegScreen = () => {
     const [nickname, setNickname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [emailError, setEmailError] = useState('');
+    const [age, setAge] = useState('');
 
     const validateEmail = (email) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -15,14 +15,18 @@ const RegScreen = () => {
 
     const handleRegister = async () => {
         if (!validateEmail(email)) {
-            setEmailError('Invalid email format');
+            alert("Некорректный формат почты");
             return;
         }
-        setEmailError('');
+        if (age < 18 || age > 100) {
+            alert("Для регистрации в сервисе Вам должно быть больше 18 лет.");
+            return;
+        }
         const user = {
             name: nickname,
             email: email,
             password: password,
+            age: parseInt(age, null),
         };
 
         try {
@@ -37,18 +41,10 @@ const RegScreen = () => {
             <h1>Findy. Join us!</h1>
             <input
                 className="reg-screen__input"
-                placeholder="Nickname"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-            />
-            <br />
-            <input
-                className="reg-screen__input"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
             />
-            {emailError && <p className="error-message">{emailError}</p>}
             <br />
             <input
                 type="password"
@@ -56,6 +52,21 @@ const RegScreen = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+            />
+            <br />
+            <input
+                className="reg-screen__input"
+                placeholder="Nickname"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+            />
+            <br />
+            <input
+                type="number"
+                className="reg-screen__input"
+                placeholder="Age"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
             />
             <br />
             <input

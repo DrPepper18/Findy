@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Map from '../../components/Map/Map.jsx';
-import EventsList from "../../components/EventsList/EventsList.jsx";
+import Sidebar from "../../components/Sidebar/Sidebar.jsx";
 import { Header } from "../../components/Header/Header.jsx";
 import { getEvents } from '../../api.js'
 import './MainPage.css'
@@ -28,7 +28,7 @@ const MainScreen = () => {
             <Header/>
             <main>
                 <div className='main-page'>
-                    <EventsList events={events}/>
+                    <Sidebar/>
                     <Map events={events}/>
                 </div>
             </main>
