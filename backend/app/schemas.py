@@ -6,14 +6,17 @@ class RegisterRequest(BaseModel):
     email: EmailStr
     password: str
     name: str
-    age: int = 18
+    age: int
+
 
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
 
-class CheckJoinRequest(BaseModel):
-    event_id: int
+
+class EditUserInfoRequest(BaseModel):
+    name: str
+    age: int
 
 
 class EventPostRequest(BaseModel):
@@ -42,6 +45,3 @@ class EventPostRequest(BaseModel):
         if self.datetime.replace(tzinfo=None) < datetime.now():
             raise ValueError('Нельзя создать событие в прошлом')
         return self
-
-class EventJoinRequest(BaseModel):
-    event_id: int

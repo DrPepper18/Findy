@@ -11,3 +11,4 @@
 .sidebar--open { width: 35vw; }
 .sidebar--closed { width: 4vw; }
 .sidebar--closed > .sidebar__content { display: none; }
+.sidebar__content > .button { width: 97%; }

@@ -15,7 +15,7 @@ const MainScreen = () => {
         const fetchEvents = async () => {
             try {
                 let data = await getEvents();
-                setEvents(data.events || []);
+                setEvents(data || []);
             } catch (error) {
                 console.error('Error fetching events:', error);
                 return [];

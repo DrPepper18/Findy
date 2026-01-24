@@ -1,9 +1,6 @@
 from fastapi import APIRouter, Depends
 from app.models.database import AsyncSession, get_db
-from app.services.event import (
-    add_new_event,
-    get_all_events
-)
+from app.services.event import add_new_event, get_all_events
 from app.services.user import get_user_info 
 from app.crypt_module import get_user_from_jwt
 from app.schemas import EventPostRequest
@@ -17,7 +14,7 @@ async def get_events(payload = Depends(get_user_from_jwt),
                      db: AsyncSession = Depends(get_db)):
     user_data = await get_user_info(email=payload["sub"], session=db)
     eventlist = await get_all_events(user_data=user_data, session=db)
-    return {"message": "Here will be your events", "events": eventlist}
+    return eventlist
 
 
 @router.post("/", status_code=201)

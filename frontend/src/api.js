@@ -26,11 +26,6 @@ api.interceptors.response.use(
     }
 );
 
-export const getEvents = async () => {
-    const response = await api.get('/event/', {});
-    console.log(response.data);
-    return response.data;
-};
 
 export const registerUser = async (user) => {
     try {
@@ -42,6 +37,7 @@ export const registerUser = async (user) => {
         throw error;
     }
 };
+
 
 export const checkLogin = async (email, password, setError) => {
     try {
@@ -56,6 +52,34 @@ export const checkLogin = async (email, password, setError) => {
     }
 };
 
+
+export const getUserInfo = async () => {
+    try {
+        const response = await api.get('/auth/');
+        return response.data;
+    } catch {
+        console.error("Произошла ошибка. Попробуйте позже");
+    }
+}
+
+
+export const updateUserInfo = async (name, age) => {
+    try {
+        const response = await api.patch('/auth/', {name, age});
+        return response.data;
+    } catch {
+        console.error("Произошла ошибка. Попробуйте позже");
+    }
+}
+
+
+export const getEvents = async () => {
+    const response = await api.get('/event/', {});
+    console.log(response.data);
+    return response.data;
+};
+
+
 export const createEvent = async (eventData) => {
     try {
         await api.post('/event/', eventData);
@@ -64,6 +88,7 @@ export const createEvent = async (eventData) => {
         console.error('Event creation error:', error.response?.data || error.message);
     }
 };
+
 
 export const joinEvent = async (event_id) => {
     try {
@@ -75,6 +100,7 @@ export const joinEvent = async (event_id) => {
     } 
 };
 
+
 export const cancelJoin = async (event_id) => {
     try {
         await api.delete(`/book/${event_id}`);
@@ -84,6 +110,7 @@ export const cancelJoin = async (event_id) => {
         alert(errorMessage);
     } 
 };
+
 
 export const checkEventJoinStatus = async (event_id) => {
     const response = await api.get(`/book/${event_id}`);

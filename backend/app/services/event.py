@@ -1,20 +1,12 @@
-from app.models.models import User, Event, Booking
-from app.models.database import AsyncSession
-from app.schemas import EventPostRequest
 import sqlalchemy as db
 from sqlalchemy import or_, and_
 from datetime import datetime
+from app.models.models import User, Event, Booking
+from app.models.database import AsyncSession
+from app.schemas import EventPostRequest
 
 
 async def get_all_events(user_data: User, session: AsyncSession) -> list:
-    """
-    SELECT *, COUNT(records.user_email) FROM events
-    JOIN records ON events.id = records.event_id
-    WHERE events.datetime >= NOW()
-        AND ($age >= events.min_age OR events.min_age IS NULL)
-        AND ($age <= events.max_age OR events.max_age IS NULL)
-    GROUP BY records.user_email
-    """
     query_select = (
         db.select(
             Event, 
@@ -41,9 +33,6 @@ async def get_all_events(user_data: User, session: AsyncSession) -> list:
 
 
 async def add_new_event(data: EventPostRequest, session: AsyncSession) -> int:
-    """
-    INSERT INTO events ($name, $latitude, $longitude, ...)
-    """
     new_event = Event(
         name=data.name,
         latitude=data.latitude,
@@ -61,14 +50,6 @@ async def add_new_event(data: EventPostRequest, session: AsyncSession) -> int:
 
 
 async def delete_expired_events(session: AsyncSession) -> None:
-    """
-    DELETE FROM records
-    INNER JOIN events ON records.event_id = events.id
-    WHERE events.datetime < NOW()
-
-    DELETE FROM events
-    WHERE events.datetime < NOW()
-    """
     delete_records_query = db.delete(Booking).where(
         Booking.Event.in_(db.select(Event.id).where(Event.datetime < datetime.now()))
     )
@@ -79,9 +60,6 @@ async def delete_expired_events(session: AsyncSession) -> None:
 
 
 async def get_event_info(id: int, session: AsyncSession) -> Event:
-    """
-    SELECT * FROM events WHERE id = $id
-    """
     query_select = db.select(Event).where(Event.id == id)
     result = await session.execute(query_select)
     event_data = result.scalars().first()
