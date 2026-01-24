@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import './Register.css';
-import {registerUser} from "../../api";
+import { registerUser } from "../../api";
+import { calculateAge } from '../../utils/DateFucntions';
+
 
 const RegScreen = () => {
     const [nickname, setNickname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [age, setAge] = useState('');
+    const [birthdate, setBirthdate] = useState('');
 
     const validateEmail = (email) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -18,6 +20,7 @@ const RegScreen = () => {
             alert("Некорректный формат почты");
             return;
         }
+        const age = calculateAge(birthdate);
         if (age < 18 || age > 100) {
             alert("Для регистрации в сервисе Вам должно быть больше 18 лет.");
             return;
@@ -26,7 +29,7 @@ const RegScreen = () => {
             name: nickname,
             email: email,
             password: password,
-            age: parseInt(age, null),
+            birthdate: birthdate,
         };
 
         try {
@@ -62,11 +65,11 @@ const RegScreen = () => {
             />
             <br />
             <input
-                type="number"
+                type="date"
                 className="reg-screen__input"
-                placeholder="Age"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
+                placeholder="Birthdate"
+                value={birthdate}
+                onChange={(e) => setBirthdate(e.target.value)}
             />
             <br />
             <input

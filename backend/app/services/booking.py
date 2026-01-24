@@ -4,6 +4,7 @@ from app.models.models import Booking
 from app.models.database import AsyncSession
 from app.services.user import get_user_info
 from app.services.event import get_event_info
+from app.utils.date_functions import calculate_age
 
 
 async def get_event_signups(id: int, session: AsyncSession) -> int:
@@ -36,10 +37,11 @@ async def join_user_to_event(event_id: int, user_email: str, session: AsyncSessi
     user = await get_user_info(user_email, session=session)
     event = await get_event_info(event_id, session=session)
     event_load = await get_event_signups(event_id, session=session)
+    user_age = calculate_age(user.birthdate)
 
     if not event:
         raise HTTPException(status_code=404, detail="Событие не найдено")
-    if not((not event.min_age or event.min_age <= user.age) and (not event.max_age or user.age <= event.max_age)):
+    if not((not event.min_age or event.min_age <= user_age) and (not event.max_age or user_age <= event.max_age)):
         raise HTTPException(status_code=403, detail="Возраст не подходит")
     if not (event.capacity > event_load):
         raise HTTPException(status_code=409, detail="Мест нет")

@@ -4,9 +4,11 @@ from datetime import datetime
 from app.models.models import User, Event, Booking
 from app.models.database import AsyncSession
 from app.schemas import EventPostRequest
+from app.utils.date_functions import calculate_age
 
 
 async def get_all_events(user_data: User, session: AsyncSession) -> list:
+    user_age = calculate_age(user_data.birthdate)
     query_select = (
         db.select(
             Event, 
@@ -16,8 +18,8 @@ async def get_all_events(user_data: User, session: AsyncSession) -> list:
         .where(
             and_(
                 Event.datetime >= datetime.now(),
-                or_(user_data.age >= Event.min_age, Event.min_age.is_(None)),
-                or_(user_data.age <= Event.max_age, Event.max_age.is_(None))
+                or_(user_age >= Event.min_age, Event.min_age.is_(None)),
+                or_(user_age <= Event.max_age, Event.max_age.is_(None))
             )
         )
         .group_by(Event.id)

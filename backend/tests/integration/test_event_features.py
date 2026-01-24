@@ -1,5 +1,6 @@
 import pytest
 from datetime import datetime, timedelta
+from app.utils.date_functions import calculate_birthdate
 
 @pytest.mark.parametrize("name, datetime, min_age, max_age, status_code", [
     ("", (datetime.now()+timedelta(days=1)).isoformat(), None, None, 422),
@@ -9,7 +10,7 @@ from datetime import datetime, timedelta
 ])
 @pytest.mark.asyncio
 async def test_event_create(client, name, datetime, min_age, max_age, status_code):
-    user = {"email": "owner@gmail.com", "password": "imaboss", "name": "Owner", "age": 30}
+    user = {"email": "owner@gmail.com", "password": "imaboss", "name": "Owner", "birthdate": calculate_birthdate(30).isoformat()}
     response = await client.post('/api/v1/auth/register', json=user)
     token = response.json()["token"]
 
@@ -32,10 +33,10 @@ async def test_event_create(client, name, datetime, min_age, max_age, status_cod
 @pytest.mark.asyncio
 async def test_event_join(client):
     users = [
-        {"email": "owner@gmail.com", "password": "imaboss", "name": "Owner", "age": 30},
-        {"email": "naughtykid@mail.ru", "password": "im18iswear", "name": "Kid", "age": 17},
-        {"email": "niceguy@ya.ru", "password": "absolutelynormal", "name": "Normis", "age": 20},
-        {"email": "latebird@yandex.ru", "password": "ihavetime", "name": "Late bird", "age": 20},
+        {"email": "owner@gmail.com", "password": "imaboss", "name": "Owner", "birthdate": calculate_birthdate(30).isoformat()},
+        {"email": "naughtykid@mail.ru", "password": "im18iswear", "name": "Kid", "birthdate": calculate_birthdate(17).isoformat()},
+        {"email": "niceguy@ya.ru", "password": "absolutelynormal", "name": "Normis", "birthdate": calculate_birthdate(20).isoformat()},
+        {"email": "latebird@yandex.ru", "password": "ihavetime", "name": "Late bird", "birthdate": calculate_birthdate(20).isoformat()},
     ]
     tokens = list()
     

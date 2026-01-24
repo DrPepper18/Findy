@@ -1,13 +1,14 @@
 import pytest
 from datetime import datetime, timedelta
+from app.utils.date_functions import calculate_birthdate
 
 
 @pytest.mark.asyncio
 async def test_full_cycle(client):
     users = [
-        {"email": "owner@gmail.com", "password": "imaboss", "name": "Owner", "age": 30},
-        {"email": "latebird@yandex.ru", "password": "ihavetime", "name": "Late bird", "age": 20},
-        {"email": "naughtykid@mail.ru", "password": "im18iswear", "name": "Kid", "age": 17},
+        {"email": "owner@gmail.com", "password": "imaboss", "name": "Owner", "birthdate": calculate_birthdate(30).isoformat()},
+        {"email": "latebird@yandex.ru", "password": "ihavetime", "name": "Late bird", "birthdate": calculate_birthdate(20).isoformat()},
+        {"email": "naughtykid@mail.ru", "password": "im18iswear", "name": "Kid", "birthdate": calculate_birthdate(17).isoformat()},
     ]
 
     # Registration

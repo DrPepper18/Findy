@@ -3,7 +3,7 @@ import sqlalchemy as db
 from sqlalchemy.exc import IntegrityError
 from app.models.models import User
 from app.models.database import AsyncSession
-from app.crypt_module import create_jwt_token, create_password_hash, is_password_correct
+from app.utils.security import create_jwt_token, create_password_hash, is_password_correct
 from app.schemas import RegisterRequest, LoginRequest, EditUserInfoRequest
 
 
@@ -22,7 +22,7 @@ async def register_user(data: RegisterRequest, session: AsyncSession) -> str:
         email=data.email,
         password_hash=passwordhash,
         name=data.name,
-        age=data.age
+        birthdate=data.birthdate
     )
     session.add(new_user)
 
@@ -71,7 +71,7 @@ async def update_user_info(data: EditUserInfoRequest, email: str, session: Async
         .where(User.email == email)
         .values(
             name=data.name,
-            age=data.age
+            birthdate=data.birthdate
         )
     )
     await session.execute(query_select)

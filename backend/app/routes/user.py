@@ -11,7 +11,7 @@ from app.schemas import (
     LoginRequest,
     EditUserInfoRequest
 )
-from app.crypt_module import get_user_from_jwt
+from app.utils.security import get_user_from_jwt
 
 
 router = APIRouter(prefix='/auth')

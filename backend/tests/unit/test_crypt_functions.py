@@ -1,4 +1,4 @@
-from app.crypt_module import (
+from app.utils.security import (
     create_jwt_token,
     verify_jwt_token,
     is_password_correct,

@@ -3,6 +3,7 @@ from sqlalchemy import (
     Column,
     Integer,
     String,
+    Date,
     DateTime,
     BigInteger,
     ForeignKey,
@@ -18,7 +19,7 @@ class User(Base):
     email = Column(String(), primary_key=True)
     password_hash = Column(LargeBinary())
     name = Column(String())
-    age = Column(Integer())
+    birthdate = Column(Date())
 
 
 class Event(Base):

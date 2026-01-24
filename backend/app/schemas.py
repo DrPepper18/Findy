@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from pydantic import BaseModel, EmailStr, model_validator
 
 
@@ -6,7 +6,7 @@ class RegisterRequest(BaseModel):
     email: EmailStr
     password: str
     name: str
-    age: int
+    birthdate: date
 
 
 class LoginRequest(BaseModel):
@@ -16,7 +16,7 @@ class LoginRequest(BaseModel):
 
 class EditUserInfoRequest(BaseModel):
     name: str
-    age: int
+    birthdate: date
 
 
 class EventPostRequest(BaseModel):

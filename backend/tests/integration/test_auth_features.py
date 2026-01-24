@@ -1,9 +1,10 @@
 import pytest
+from app.utils.date_functions import calculate_birthdate
 
 users = [
-    {"email": "", "password": "", "name": "", "age": None},
-    {"email": "Late bird", "password": "ihavetime", "name": "Late bird", "age": 20},
-    {"email": "naughtykid@mail.ru", "password": "im18iswear", "name": "Kid", "age": 17},
+    {"email": "", "password": "", "name": "", "birthdate": None},
+    {"email": "Late bird", "password": "ihavetime", "name": "Late bird", "birthdate": calculate_birthdate(20).isoformat()},
+    {"email": "naughtykid@mail.ru", "password": "im18iswear", "name": "Kid", "birthdate": calculate_birthdate(17).isoformat()},
 ]
 
 @pytest.mark.parametrize("user, status_code", [
@@ -41,7 +42,7 @@ async def test_auth_login(client, user, status_code):
         await client.post('/api/v1/auth/register', json={
             "email": user["email"], 
             "password": user["password"],
-            "name": "TestUser", "age": 20
+            "name": "TestUser", "birthdate": calculate_birthdate(20).isoformat()
         })
 
     login_password = user.get("attempt", user["password"])

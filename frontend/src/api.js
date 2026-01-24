@@ -63,9 +63,9 @@ export const getUserInfo = async () => {
 }
 
 
-export const updateUserInfo = async (name, age) => {
+export const updateUserInfo = async (name, birthdate) => {
     try {
-        const response = await api.patch('/auth/', {name, age});
+        const response = await api.patch('/auth/', {name, birthdate});
         return response.data;
     } catch {
         console.error("Произошла ошибка. Попробуйте позже");

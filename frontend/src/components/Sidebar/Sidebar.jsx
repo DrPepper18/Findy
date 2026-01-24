@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { getUserInfo, updateUserInfo } from '../../api';
 import './Sidebar.css'
+import { calculateAge } from '../../utils/DateFucntions';
 
 
 const Sidebar = () => {
     const [hidden, setHidden] = useState(true);
     const handleClick = () => setHidden(!hidden);
     const [nickname, setNickname] = useState('');
-    const [age, setAge] = useState();
+    const [birthdate, setBirthdate] = useState('');
     
     const handleEdit = async () => {
-        await updateUserInfo(nickname, age);
+        if (calculateAge(birthdate) < 18) {
+            alert("Вам должно быть больше 18 лет.");
+            return;
+        }
+        await updateUserInfo(nickname, birthdate);
         alert("Данные успешно сохранены");
     }
 
@@ -19,7 +24,7 @@ const Sidebar = () => {
             let userData = await getUserInfo();
             console.log(userData);
             setNickname(userData["name"]);
-            setAge(userData["age"]);
+            setBirthdate(userData["birthdate"]);
         }
         fetchUserData();
     }, []);
@@ -37,11 +42,11 @@ const Sidebar = () => {
                 />
                 <br />
                 <input
-                    type="number"
+                    type="date"
                     className="reg-screen__input"
-                    placeholder="Age"
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
+                    placeholder="Birthdate"
+                    value={birthdate}
+                    onChange={(e) => setBirthdate(e.target.value)}
                 />
                 <br />
                 <input

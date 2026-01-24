@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from app.models.database import AsyncSession, get_db
 from app.services.event import add_new_event, get_all_events
 from app.services.user import get_user_info 
-from app.crypt_module import get_user_from_jwt
+from app.utils.security import get_user_from_jwt
 from app.schemas import EventPostRequest
 
 

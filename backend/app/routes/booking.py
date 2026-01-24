@@ -5,7 +5,7 @@ from app.services.booking import (
     join_user_to_event,
     cancel_join_to_event
 )
-from app.crypt_module import get_user_from_jwt
+from app.utils.security import get_user_from_jwt
 
 
 router = APIRouter(prefix='/book')
