@@ -1,31 +1,32 @@
 import pytest
+from httpx import AsyncClient
 from datetime import datetime, timedelta
 from app.utils.date_functions import calculate_birthdate
 
 
 @pytest.mark.asyncio
-async def test_full_cycle(client):
+async def test_full_cycle(client: AsyncClient):
     users = [
         {"email": "owner@gmail.com", "password": "imaboss", "name": "Owner", "birthdate": calculate_birthdate(30).isoformat()},
         {"email": "latebird@yandex.ru", "password": "ihavetime", "name": "Late bird", "birthdate": calculate_birthdate(20).isoformat()},
         {"email": "naughtykid@mail.ru", "password": "im18iswear", "name": "Kid", "birthdate": calculate_birthdate(17).isoformat()},
     ]
 
-    # Registration
-    response = await client.post('/api/v1/auth/register', json=users[0])
-    assert response.status_code == 201
-    response = await client.post('/api/v1/auth/register', json=users[1])
-    assert response.status_code == 201
-    response = await client.post('/api/v1/auth/register', json=users[2])
-    assert response.status_code == 201
+    tokens = []
+    
+    for user in users:
+        # Registration
+        response = await client.post('/api/v1/auth/register', json=user)
+        assert response.status_code == 201
 
-    # Authentication (Owner)
-    response = await client.post('/api/v1/auth/login', json={
-        "email": users[0]["email"],
-        "password": users[0]["password"]
-    })
-    token = response.json()["token"]
-    assert token
+        # Login
+        response = await client.post('/api/v1/auth/login', json={
+            "email": user["email"],
+            "password": user["password"]
+        })
+        assert response.status_code == 200
+        token = response.json()["token"]
+        tokens.append(token)
     
 
     # Create an event
@@ -39,7 +40,7 @@ async def test_full_cycle(client):
         "capacity": 1
     }
     response = await client.post('/api/v1/event/',
-                                    headers={"Authorization": f"Bearer {token}"}, 
+                                    headers={"Authorization": f"Bearer {tokens[0]}"}, 
                                     json=event
     )
     assert response.status_code == 201
@@ -47,18 +48,10 @@ async def test_full_cycle(client):
     assert event_id
     
 
-    # Authentication (Kid)
-    response = await client.post('/api/v1/auth/login', json={
-        "email": users[2]["email"],
-        "password": users[2]["password"]
-    })
-    token = response.json()["token"]
-    assert token
-
     # Join the event (failed: too young)
-    response = await client.post(f'/api/v1/book/{event_id}', headers={"Authorization": f"Bearer {token}"})
+    response = await client.post(f'/api/v1/book/{event_id}', headers={"Authorization": f"Bearer {tokens[2]}"})
     assert response.status_code == 403
 
     # Check participation (expect: false)
-    response = await client.get(f'/api/v1/book/{event_id}', headers={"Authorization": f"Bearer {token}"})
-    assert response.json()["joined"] == False
+    response = await client.get(f'/api/v1/book/{event_id}', headers={"Authorization": f"Bearer {tokens[2]}"})
+    assert not response.json()["joined"]

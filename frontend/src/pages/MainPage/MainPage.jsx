@@ -8,10 +8,6 @@ import './MainPage.css'
 const MainScreen = () => {
     const [events, setEvents] = useState([]);
     useEffect(() => {
-        if(!localStorage.getItem('jwt')) {
-            window.location.href = '/login';
-            return;
-        }
         const fetchEvents = async () => {
             try {
                 let data = await getEvents();

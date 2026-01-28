@@ -1,4 +1,5 @@
 import pytest
+from httpx import AsyncClient
 from datetime import datetime, timedelta
 from app.utils.date_functions import calculate_birthdate
 
@@ -9,8 +10,13 @@ from app.utils.date_functions import calculate_birthdate
     ("Настолки в Парке Горького", (datetime.now()+timedelta(days=1)).isoformat(), 18, None, 201),
 ])
 @pytest.mark.asyncio
-async def test_event_create(client, name, datetime, min_age, max_age, status_code):
-    user = {"email": "owner@gmail.com", "password": "imaboss", "name": "Owner", "birthdate": calculate_birthdate(30).isoformat()}
+async def test_event_create(client: AsyncClient, name: str, datetime: str, min_age: int, max_age: int, status_code: int):
+    user = {
+        "email": "owner@gmail.com", 
+        "password": "imaboss", 
+        "name": "Owner", 
+        "birthdate": calculate_birthdate(30).isoformat()
+    }
     response = await client.post('/api/v1/auth/register', json=user)
     token = response.json()["token"]
 
@@ -31,7 +37,7 @@ async def test_event_create(client, name, datetime, min_age, max_age, status_cod
 
 
 @pytest.mark.asyncio
-async def test_event_join(client):
+async def test_event_join(client: AsyncClient):
     users = [
         {"email": "owner@gmail.com", "password": "imaboss", "name": "Owner", "birthdate": calculate_birthdate(30).isoformat()},
         {"email": "naughtykid@mail.ru", "password": "im18iswear", "name": "Kid", "birthdate": calculate_birthdate(17).isoformat()},

@@ -1,44 +1,36 @@
 from sqlalchemy.orm import declarative_base
-from sqlalchemy import (
-    Column,
-    Integer,
-    String,
-    Date,
-    DateTime,
-    BigInteger,
-    ForeignKey,
-    LargeBinary,
-    Float,
-    UniqueConstraint
-)
+import sqlalchemy as sa
+
+
 Base = declarative_base()
 
 
 class User(Base):
     __tablename__ = "users"
-    email = Column(String(), primary_key=True)
-    password_hash = Column(LargeBinary())
-    name = Column(String())
-    birthdate = Column(Date())
+    id = sa.Column(sa.BigInteger(), primary_key=True, autoincrement=True)
+    email = sa.Column(sa.String(), unique=True)
+    password_hash = sa.Column(sa.LargeBinary())
+    name = sa.Column(sa.String())
+    birthdate = sa.Column(sa.Date())
 
 
 class Event(Base):
     __tablename__ = "events"
-    id = Column(BigInteger(), primary_key=True, autoincrement=True)
-    name = Column(String())
-    latitude = Column(Float())
-    longitude = Column(Float())
-    datetime = Column(DateTime())
-    min_age = Column(Integer(), nullable=True)
-    max_age = Column(Integer(), nullable=True)
-    capacity = Column(Integer())
+    id = sa.Column(sa.BigInteger(), primary_key=True, autoincrement=True)
+    name = sa.Column(sa.String())
+    latitude = sa.Column(sa.Float())
+    longitude = sa.Column(sa.Float())
+    datetime = sa.Column(sa.DateTime())
+    min_age = sa.Column(sa.Integer(), nullable=True)
+    max_age = sa.Column(sa.Integer(), nullable=True)
+    capacity = sa.Column(sa.Integer())
 
 
 class Booking(Base):
     __tablename__ = "bookings"
-    id = Column(BigInteger(), primary_key=True, autoincrement=True)
-    event_id = Column(ForeignKey(Event.id))
-    user_email = Column(ForeignKey(User.email))
+    id = sa.Column(sa.BigInteger(), primary_key=True, autoincrement=True)
+    event_id = sa.Column(sa.ForeignKey(Event.id))
+    user_id = sa.Column(sa.ForeignKey(User.id))
     __table_args__ = (
-        UniqueConstraint(event_id, user_email, name='unique_record'),
+        sa.UniqueConstraint(event_id, user_id, name='unique_record'),
     )

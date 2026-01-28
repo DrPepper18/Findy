@@ -14,27 +14,27 @@ async def get_event_signups(id: int, session: AsyncSession) -> int:
     return event_signups_count
 
 
-async def get_join_status(event_id: int, user_email: str, session: AsyncSession) -> bool:
+async def get_join_status(event_id: int, user_id: int, session: AsyncSession) -> bool:
     query_select = db.select(Booking).where(
         (Booking.event_id == event_id) & 
-        (Booking.user_email == user_email)
+        (Booking.user_id == user_id)
     )
     result = await session.execute(query_select)
     joined_data = result.scalars().first()
     return joined_data is not None
 
 
-async def register_join(event_id: str, user_email: str, session: AsyncSession) -> None:
+async def register_join(event_id: str, user_id: int, session: AsyncSession) -> None:
     new_record = Booking(
         event_id=event_id,
-        user_email=user_email
+        user_id=user_id
     )
     session.add(new_record)
     await session.commit()
 
 
-async def join_user_to_event(event_id: int, user_email: str, session: AsyncSession) -> None:
-    user = await get_user_info(user_email, session=session)
+async def join_user_to_event(event_id: int, user_id: int, session: AsyncSession) -> None:
+    user = await get_user_info(user_id, session=session)
     event = await get_event_info(event_id, session=session)
     event_load = await get_event_signups(event_id, session=session)
     user_age = calculate_age(user.birthdate)
@@ -46,12 +46,12 @@ async def join_user_to_event(event_id: int, user_email: str, session: AsyncSessi
     if not (event.capacity > event_load):
         raise HTTPException(status_code=409, detail="Мест нет")
 
-    await register_join(event_id=event_id, user_email=user_email, session=session)
+    await register_join(event_id=event_id, user_id=user_id, session=session)
 
 
-async def cancel_join_to_event(event_id: int, user_email: str, session: AsyncSession) -> None:
+async def cancel_join_to_event(event_id: int, user_id: int, session: AsyncSession) -> None:
     delete_record_query = db.delete(Booking).where(
-        (Booking.user_email == user_email) & 
+        (Booking.user_id == user_id) & 
         (Booking.event_id == event_id)
     )
     await session.execute(delete_record_query)
