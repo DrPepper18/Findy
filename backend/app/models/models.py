@@ -30,7 +30,7 @@ class Booking(Base):
     __tablename__ = "bookings"
     id = sa.Column(sa.BigInteger(), primary_key=True, autoincrement=True)
     event_id = sa.Column(sa.ForeignKey(Event.id))
-    user_email = sa.Column(sa.ForeignKey(User.email))
+    user_id = sa.Column(sa.ForeignKey(User.id))
     __table_args__ = (
-        sa.UniqueConstraint(event_id, user_email, name='unique_record'),
+        sa.UniqueConstraint(event_id, user_id, name='unique_record'),
     )

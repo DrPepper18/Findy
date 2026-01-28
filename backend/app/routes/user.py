@@ -30,25 +30,25 @@ router = APIRouter(prefix='/auth')
 
 @router.post("/register", status_code=201)
 async def register(data: RegisterRequest, response: Response, db: AsyncSession = Depends(get_db)):
-    await register_user(data=data, session=db)
+    user_id = await register_user(data=data, session=db)
 
-    tokens = create_both_tokens(email=data.email)
+    tokens = create_both_tokens(user_id=user_id)
     response.set_cookie(value=tokens["refresh"], **COOKIE_SETTINGS)
     return {"token": tokens["access"]}
 
 
 @router.post("/login")
 async def login(data: LoginRequest, response: Response, db: AsyncSession = Depends(get_db)):
-    await authenticate_user(data=data, session=db)
+    user_id = await authenticate_user(data=data, session=db)
 
-    tokens = create_both_tokens(email=data.email)
+    tokens = create_both_tokens(user_id=user_id)
     response.set_cookie(value=tokens["refresh"], **COOKIE_SETTINGS)
     return {"token": tokens["access"]}
 
 
 @router.get("/refresh")
 async def refresh(response: Response, payload = Depends(verify_refresh_token)):
-    tokens = create_both_tokens(email=payload["sub"])
+    tokens = create_both_tokens(user_id=int(payload["sub"]))
     response.set_cookie(value=tokens["refresh"], **COOKIE_SETTINGS)
     return {"token": tokens["access"]}
 
@@ -56,7 +56,7 @@ async def refresh(response: Response, payload = Depends(verify_refresh_token)):
 @router.get("/")
 async def get_info(payload = Depends(verify_access_token),
                    db: AsyncSession = Depends(get_db)):
-    user_info = await get_user_info(email=payload["sub"], session=db)
+    user_info = await get_user_info(user_id=int(payload["sub"]), session=db)
     return user_info
 
 
@@ -64,5 +64,5 @@ async def get_info(payload = Depends(verify_access_token),
 async def edit_info(data: EditUserInfoRequest,
                          payload = Depends(verify_access_token),
                          db: AsyncSession = Depends(get_db)):
-    await update_user_info(data=data, email=payload["sub"], session=db)
+    await update_user_info(data=data, user_id=int(payload["sub"]), session=db)
     return {"message": "Patch successful"}

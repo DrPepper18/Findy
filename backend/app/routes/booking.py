@@ -15,7 +15,7 @@ router = APIRouter(prefix='/book')
 async def join_event(event_id: int, 
                      payload = Depends(verify_access_token), 
                      db: AsyncSession = Depends(get_db)):
-    await join_user_to_event(event_id=event_id, user_email=payload["sub"], session=db)
+    await join_user_to_event(event_id=event_id, user_id=int(payload["sub"]), session=db)
     return {"message": "POST request is completed"}
 
 
@@ -23,7 +23,7 @@ async def join_event(event_id: int,
 async def cancel_join(event_id: int, 
                      payload = Depends(verify_access_token), 
                      db: AsyncSession = Depends(get_db)):
-    await cancel_join_to_event(event_id=event_id, user_email=payload["sub"], session=db)
+    await cancel_join_to_event(event_id=event_id, user_id=int(payload["sub"]), session=db)
     return {"message": "DELETE request is completed"}
     
 
@@ -31,5 +31,5 @@ async def cancel_join(event_id: int,
 async def check_event_join(event_id: int, 
                            payload = Depends(verify_access_token), 
                            db: AsyncSession = Depends(get_db)):    
-    result = await get_join_status(event_id=event_id, user_email=payload["sub"], session=db)
+    result = await get_join_status(event_id=event_id, user_id=int(payload["sub"]), session=db)
     return {"joined": result}

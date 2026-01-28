@@ -32,7 +32,7 @@ async def register_user(data: RegisterRequest, session: AsyncSession) -> str:
         session.rollback()
         raise HTTPException(status_code=500, detail="Ошибка при сохранении в базу")
     
-    return data.email
+    return new_user.id
 
 
 async def get_password_hash(email: str, session: AsyncSession) -> bytes:
@@ -53,20 +53,24 @@ async def authenticate_user(data: LoginRequest, session: AsyncSession) -> str:
     if not success:
         raise HTTPException(status_code=401, detail="Invalid email or password")
     
-    return data.email
+    query_select = db.select(User.id).where(User.email == data.email)
+    result = await session.execute(query_select)
+    user_id = result.scalar()
+    
+    return user_id
     
 
-async def get_user_info(email: str, session: AsyncSession) -> User:
-    query_select = db.select(User).where(User.email == email)
+async def get_user_info(user_id: int, session: AsyncSession) -> User:
+    query_select = db.select(User).where(User.id == user_id)
     result = await session.execute(query_select)
     user_data = result.scalars().first()
     return user_data
 
 
-async def update_user_info(data: EditUserInfoRequest, email: str, session: AsyncSession) -> User:
+async def update_user_info(data: EditUserInfoRequest, user_id: int, session: AsyncSession) -> User:
     query_select = (
         db.update(User)
-        .where(User.email == email)
+        .where(User.id == user_id)
         .values(
             name=data.name,
             birthdate=data.birthdate

@@ -35,7 +35,6 @@ def verify_access_token(token: str = Depends(oauth2_scheme)) -> dict:
 
 
 def verify_refresh_token(token: str = Cookie(None, alias="refresh")) -> dict:
-    print(f"[[[{token}]]]")
     payload = validate_token(token)
 
     if payload["type"] != 'refresh':
@@ -45,9 +44,9 @@ def verify_refresh_token(token: str = Cookie(None, alias="refresh")) -> dict:
 
 
 # I should probably do enum for token_type
-def create_jwt_token(email: str, token_type: str = "access") -> str:
+def create_jwt_token(user_id: int, token_type: str = "access") -> str:
     payload = {
-        "sub": email,
+        "sub": str(user_id),
         "type": token_type,
         "iat": int(time.time()),
         "exp": int(time.time()) + TOKEN_LIFESPAN[token_type]
@@ -56,10 +55,10 @@ def create_jwt_token(email: str, token_type: str = "access") -> str:
     return token
 
 
-def create_both_tokens(email: str) -> dict:
+def create_both_tokens(user_id: int) -> dict:
     return {
-        "refresh": create_jwt_token(email=email, token_type="refresh"),
-        "access": create_jwt_token(email=email, token_type="access")
+        "refresh": create_jwt_token(user_id=user_id, token_type="refresh"),
+        "access": create_jwt_token(user_id=user_id, token_type="access")
     }
 
 

@@ -12,7 +12,7 @@ router = APIRouter(prefix='/event')
 @router.get("/")
 async def get_events(payload = Depends(verify_access_token), 
                      db: AsyncSession = Depends(get_db)):
-    user_data = await get_user_info(email=payload["sub"], session=db)
+    user_data = await get_user_info(user_id=int(payload["sub"]), session=db)
     eventlist = await get_all_events(user_data=user_data, session=db)
     return eventlist
 
