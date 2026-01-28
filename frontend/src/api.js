@@ -17,11 +17,26 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
     (response) => response,
-    (error) => {
-        if (error.response && error.response.status === 401) {
-            localStorage.removeItem('jwt');
-            window.location.href = '/login';
+    async (error) => {
+        const originalRequest = error.config;
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+            try {
+                const response = await api.get('/auth/refresh', { withCredentials: true });
+
+                const newAccessToken = response.data.token;
+                localStorage.setItem('jwt', newAccessToken);
+                originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+
+                return api(originalRequest);
+                
+            } catch (refreshError) {
+                localStorage.removeItem('jwt');
+                window.location.href = '/login';
+                return Promise.reject(refreshError);
+            }
         }
+
         return Promise.reject(error);
     }
 );
@@ -29,7 +44,7 @@ api.interceptors.response.use(
 
 export const registerUser = async (user) => {
     try {
-        const response = await api.post('/auth/register', user);
+        const response = await api.post('/auth/register', user, { withCredentials: true });
         localStorage.setItem('jwt', response.data.token);
         window.location.href = '/';
     } catch (error) {
@@ -41,7 +56,7 @@ export const registerUser = async (user) => {
 
 export const checkLogin = async (email, password, setError) => {
     try {
-        const response = await api.post('/auth/login', { email, password });
+        const response = await api.post('/auth/login', { email, password }, { withCredentials: true });
         localStorage.setItem('jwt', response.data.token);
         window.location.href = '/';
     } catch (error) {

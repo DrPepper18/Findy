@@ -7,6 +7,7 @@ class RegisterRequest(BaseModel):
     password: str
     name: str
     birthdate: date
+    # Add a validator: user must be 18 y.o or older
 
 
 class LoginRequest(BaseModel):
@@ -17,6 +18,7 @@ class LoginRequest(BaseModel):
 class EditUserInfoRequest(BaseModel):
     name: str
     birthdate: date
+    # Add a validator: user must be 18 y.o or older
 
 
 class EventPostRequest(BaseModel):
@@ -45,3 +47,5 @@ class EventPostRequest(BaseModel):
         if self.datetime.replace(tzinfo=None) < datetime.now():
             raise ValueError('Нельзя создать событие в прошлом')
         return self
+    
+    # Add a validator: event mustn't be at 11:00 PM - 05:00 AM

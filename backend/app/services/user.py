@@ -17,10 +17,10 @@ async def register_user(data: RegisterRequest, session: AsyncSession) -> str:
             detail="Пользователь с таким email уже зарегистрирован"
         )
 
-    passwordhash = create_password_hash(password=data.password)
+    password_hash = create_password_hash(password=data.password)
     new_user = User(
         email=data.email,
-        password_hash=passwordhash,
+        password_hash=password_hash,
         name=data.name,
         birthdate=data.birthdate
     )
@@ -32,8 +32,7 @@ async def register_user(data: RegisterRequest, session: AsyncSession) -> str:
         session.rollback()
         raise HTTPException(status_code=500, detail="Ошибка при сохранении в базу")
     
-    jwttoken = create_jwt_token(email=data.email)
-    return jwttoken
+    return data.email
 
 
 async def get_password_hash(email: str, session: AsyncSession) -> bytes:
@@ -48,14 +47,13 @@ async def get_password_hash(email: str, session: AsyncSession) -> bytes:
 
 
 async def authenticate_user(data: LoginRequest, session: AsyncSession) -> str:
-    passwordhash = await get_password_hash(email=data.email, session=session)
-    success = is_password_correct(data.password, passwordhash)
+    password_hash = await get_password_hash(email=data.email, session=session)
+    success = is_password_correct(data.password, password_hash)
 
     if not success:
         raise HTTPException(status_code=401, detail="Invalid email or password")
     
-    jwttoken = create_jwt_token(email=data.email)
-    return jwttoken
+    return data.email
     
 
 async def get_user_info(email: str, session: AsyncSession) -> User:
