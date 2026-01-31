@@ -41,7 +41,7 @@ const RegScreen = () => {
 
     return (
         <div className="reg-screen">
-            <h1>Findy. Join us!</h1>
+            <h1>Nighdee. Join us!</h1>
             <input
                 className="reg-screen__input"
                 placeholder="Email"

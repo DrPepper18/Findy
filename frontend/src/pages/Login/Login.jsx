@@ -16,7 +16,7 @@ const LoginScreen = () => {
 
 	return (
 		<div className='login-panel'>
-			<h1>Findy. Log in</h1>
+			<h1>Nighdee. Log in</h1>
 			<input
 				className='login-panel__input'
 				placeholder="E-mail"

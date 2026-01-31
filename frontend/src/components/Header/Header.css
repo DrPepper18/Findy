@@ -2,17 +2,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: url("../../assets/logoWithoutText.jpg") no-repeat;
-    background-size: contain;
-    background-position: left;    
     text-align: right;
     padding: 10px;
     box-sizing: border-box;
     height: 11vh;
+    border: black 1px solid;
 }
 
-header{
-    width: 100%;
-    border: black 1px solid;
-    font-family: Arial;
-}
+.app-header__logo {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    background: url("../../assets/logoWithoutText.jpg") no-repeat;
+    background-size: auto 100%;
+    background-position: center;
+};
