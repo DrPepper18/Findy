@@ -9,6 +9,9 @@ const RegScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [birthdate, setBirthdate] = useState('');
+    const [consent, setConsent] = useState(false);
+    const PRIVACY_LINK = 
+    "https://docs.google.com/document/d/11QdpZhEwXqzgPyeY6tpTM_JyKh28AqKz5OHvJetl2Gg/edit?usp=sharing";
 
     const validateEmail = (email) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -16,6 +19,10 @@ const RegScreen = () => {
     };
 
     const handleRegister = async () => {
+        if (!consent) {
+            alert("Вы должны согласиться с Политикой конфиденциальности");
+            return;
+        }
         if (!validateEmail(email)) {
             alert("Некорректный формат почты");
             return;
@@ -34,6 +41,7 @@ const RegScreen = () => {
 
         try {
             await registerUser(user);
+            window.location.href = '/';
         } catch (error) {
             console.error('Error:', error);
         }
@@ -43,12 +51,12 @@ const RegScreen = () => {
         <div className="reg-screen">
             <h1>Nighdee. Join us!</h1>
             <input
+                type="email"
                 className="reg-screen__input"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
             />
-            <br />
             <input
                 type="password"
                 className="reg-screen__input"
@@ -56,14 +64,12 @@ const RegScreen = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
-            <br />
             <input
                 className="reg-screen__input"
                 placeholder="Nickname"
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
             />
-            <br />
             <input
                 type="date"
                 className="reg-screen__input"
@@ -71,13 +77,27 @@ const RegScreen = () => {
                 value={birthdate}
                 onChange={(e) => setBirthdate(e.target.value)}
             />
-            <br />
+            <div style={{display: 'flex'}}>
+                <input
+                    type="checkbox"
+                    checked={consent}
+                    onChange={(e) => setConsent(e.target.checked)}
+                />
+                <p>
+                    Я соглашаюсь с <a href={PRIVACY_LINK}>Политикой и Правилами сервиса</a>
+                </p>
+            </div>
             <input
                 className="button button--to-go"
                 type="button"
                 value="Register"
                 onClick={handleRegister}
             />
+            <input
+				type="button"
+				value="Log in"
+				onClick={() => window.location.href = '/login'}
+			/>
         </div>
     );
 };

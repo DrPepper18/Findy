@@ -46,7 +46,6 @@ export const registerUser = async (user) => {
     try {
         const response = await api.post('/auth/register', user, { withCredentials: true });
         localStorage.setItem('jwt', response.data.token);
-        window.location.href = '/';
     } catch (error) {
         console.error('Registration error:', error.response?.data || error.message);
         throw error;
@@ -58,7 +57,6 @@ export const checkLogin = async (email, password, setError) => {
     try {
         const response = await api.post('/auth/login', { email, password }, { withCredentials: true });
         localStorage.setItem('jwt', response.data.token);
-        window.location.href = '/';
     } catch (error) {
         const message = error.response?.status === 401 || error.response?.status === 400
             ? 'Неверные данные входа'

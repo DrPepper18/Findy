@@ -12,6 +12,7 @@ const LoginScreen = () => {
 	const handleLogin = () => {
 		setError('');
 		checkLogin(email, password, setError);
+		window.location.href = '/';
 	};
 
 	return (
