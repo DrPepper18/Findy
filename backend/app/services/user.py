@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 import sqlalchemy as db
 from sqlalchemy.exc import IntegrityError
-from app.models.models import User
+from app.models.models import User, Booking
 from app.models.database import AsyncSession
 from app.utils.security import create_jwt_token, create_password_hash, is_password_correct
 from app.schemas import RegisterRequest, LoginRequest, EditUserInfoRequest
@@ -77,4 +77,18 @@ async def update_user_info(data: EditUserInfoRequest, user_id: int, session: Asy
         )
     )
     await session.execute(query_select)
+    await session.commit()
+
+
+async def delete_user(user_id: int, session: AsyncSession) -> None:
+    query_delete_bookings = (
+        db.delete(Booking)
+        .where(Booking.user_id == user_id)
+    )
+    query_delete_user = (
+        db.delete(User)
+        .where(User.id == user_id)
+    )
+    await session.execute(query_delete_bookings)
+    await session.execute(query_delete_user)
     await session.commit()

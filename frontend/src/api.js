@@ -53,16 +53,25 @@ export const registerUser = async (user) => {
 };
 
 
-export const checkLogin = async (email, password, setError) => {
+export const checkLogin = async (email, password) => {
     try {
         const response = await api.post('/auth/login', { email, password }, { withCredentials: true });
         localStorage.setItem('jwt', response.data.token);
     } catch (error) {
-        const message = error.response?.status === 401 || error.response?.status === 400
-            ? 'Неверные данные входа'
-            : 'Произошла ошибка. Попробуйте позже.';
-        setError(message);
+        let message = null;
+        switch(error.response.status) {
+            case 401:
+                message = "Неправильные данные для входа";
+                break;
+            case 404:
+                message = "Не найден такой пользователь";
+                break;
+            default:
+                message = "Неизвестная ошибка. Повторите позже";
+        }
+        throw message;
     }
+    
 };
 
 
@@ -79,6 +88,17 @@ export const getUserInfo = async () => {
 export const updateUserInfo = async (name, birthdate) => {
     try {
         const response = await api.patch('/auth/', {name, birthdate});
+        return response.data;
+    } catch {
+        console.error("Произошла ошибка. Попробуйте позже");
+    }
+}
+
+
+export const deleteUser = async () => {
+    try {
+        const response = await api.delete('/auth/', { withCredentials: true });
+        localStorage.clear();
         return response.data;
     } catch {
         console.error("Произошла ошибка. Попробуйте позже");

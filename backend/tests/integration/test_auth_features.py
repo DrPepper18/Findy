@@ -21,12 +21,19 @@ users = [
         "name": "Kid", 
         "birthdate": calculate_birthdate(17).isoformat()
     },
+    {
+        "email": "owner@mail.ru", 
+        "password": "iamnormal", 
+        "name": "Owner", 
+        "birthdate": calculate_birthdate(27).isoformat()
+    },
 ]
 
 @pytest.mark.parametrize("user, status_code", [
     (users[0], 422),    # Пустые поля == 422
     (users[1], 422),    # email не в формате почты == 422
-    (users[2], 201),    # OK == 201
+    (users[2], 422),    # Несовершеннолетний == 422
+    (users[3], 201)     # OK == 201
 ])
 @pytest.mark.asyncio
 async def test_auth_register(client: AsyncClient, user, status_code):
@@ -36,7 +43,7 @@ async def test_auth_register(client: AsyncClient, user, status_code):
 
 @pytest.mark.asyncio
 async def test_auth_register_duplicate(client: AsyncClient):
-    user = users[2]
+    user = users[3]
     await client.post('/api/v1/auth/register', json=user)
     response = await client.post('/api/v1/auth/register', json=user)
     assert response.status_code == 409

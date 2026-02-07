@@ -9,7 +9,7 @@ async def test_full_cycle(client: AsyncClient):
     users = [
         {"email": "owner@gmail.com", "password": "imaboss", "name": "Owner", "birthdate": calculate_birthdate(30).isoformat()},
         {"email": "latebird@yandex.ru", "password": "ihavetime", "name": "Late bird", "birthdate": calculate_birthdate(20).isoformat()},
-        {"email": "naughtykid@mail.ru", "password": "im18iswear", "name": "Kid", "birthdate": calculate_birthdate(17).isoformat()},
+        {"email": "naughtykid@mail.ru", "password": "im18iswear", "name": "Kid", "birthdate": calculate_birthdate(18).isoformat()},
     ]
 
     tokens = []
@@ -35,7 +35,7 @@ async def test_full_cycle(client: AsyncClient):
         "latitude": 55.727050,
         "longitude": 37.600500,
         "datetime": (datetime.now() + timedelta(days=1)).isoformat(),
-        "min_age": 18,
+        "min_age": 19,
         "max_age": None,
         "capacity": 1
     }

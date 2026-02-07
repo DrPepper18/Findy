@@ -7,12 +7,18 @@ import './Login.css'
 const LoginScreen = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [error, setError] = useState('');
 
-	const handleLogin = () => {
-		setError('');
-		checkLogin(email, password, setError);
-		window.location.href = '/';
+	const handleLogin = async () => {
+		if (!email || !password) {
+			alert("Пожалуйста, введите все данные");
+			return;
+		}
+		try {
+			await checkLogin(email, password);
+			window.location.href = '/';
+		} catch(error) {
+			alert(error);
+		}
 	};
 
 	return (
@@ -24,7 +30,6 @@ const LoginScreen = () => {
 				value={email}
 				onChange={(e) => setEmail(e.target.value)}
 			/>
-			<br />
 			<input
 				type="password"
 				className='login-panel__input'
@@ -32,8 +37,6 @@ const LoginScreen = () => {
 				value={password}
 				onChange={(e) => setPassword(e.target.value)}
 			/>
-			<br />
-			{error && <p style={{color: 'red'}}>{error}</p>}
 			<input
 				className='button button--to-go'
 				type="button"

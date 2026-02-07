@@ -4,7 +4,8 @@ from app.services.user import (
     register_user,
     authenticate_user,
     get_user_info,
-    update_user_info
+    update_user_info,
+    delete_user
 )
 from app.schemas import RegisterRequest, LoginRequest, EditUserInfoRequest
 from app.utils.security import (
@@ -54,15 +55,23 @@ async def refresh(response: Response, payload = Depends(verify_refresh_token)):
 
 
 @router.get("/")
-async def get_info(payload = Depends(verify_access_token),
+async def get_user(payload = Depends(verify_access_token),
                    db: AsyncSession = Depends(get_db)):
     user_info = await get_user_info(user_id=int(payload["sub"]), session=db)
     return user_info
 
 
 @router.patch("/")
-async def edit_info(data: EditUserInfoRequest,
-                         payload = Depends(verify_access_token),
-                         db: AsyncSession = Depends(get_db)):
+async def edit_user(data: EditUserInfoRequest,
+                    payload = Depends(verify_access_token),
+                    db: AsyncSession = Depends(get_db)):
     await update_user_info(data=data, user_id=int(payload["sub"]), session=db)
     return {"message": "Patch successful"}
+
+
+@router.delete("/")
+async def handle_delete_user(response: Response, payload = Depends(verify_access_token),
+                      db: AsyncSession = Depends(get_db)):
+    await delete_user(user_id=int(payload["sub"]), session=db)
+    response.delete_cookie("refresh")
+    return {"message": "Delete successful"}

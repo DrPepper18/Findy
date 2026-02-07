@@ -1,13 +1,26 @@
-from datetime import date, datetime
-from pydantic import BaseModel, EmailStr, model_validator
+from datetime import datetime
+from typing import Annotated
+from pydantic import BaseModel, AfterValidator, EmailStr, Field, model_validator
+from app.utils.date_functions import calculate_age
+
+
+CURFEW_BEGIN = 23
+CURFEW_END = 5
+AGE_LIMIT = 18
+CAPACITY_LIMIT = 16
+
+
+def validate_age(birthdate):
+    if calculate_age(birthdate) < AGE_LIMIT:
+        raise ValueError("Сервис предназначен для лиц старше 18 лет")
+    return birthdate
 
 
 class RegisterRequest(BaseModel):
     email: EmailStr
     password: str
     name: str
-    birthdate: date
-    # Add a validator: user must be 18 y.o or older
+    birthdate: Annotated[datetime, AfterValidator(validate_age)]
 
 
 class LoginRequest(BaseModel):
@@ -17,24 +30,17 @@ class LoginRequest(BaseModel):
 
 class EditUserInfoRequest(BaseModel):
     name: str
-    birthdate: date
-    # Add a validator: user must be 18 y.o or older
+    birthdate: Annotated[datetime, AfterValidator(validate_age)]
 
 
 class EventPostRequest(BaseModel):
-    name: str
+    name: Annotated[str, Field(min_length=1)]
     datetime: datetime
     longitude: float
     latitude: float
     capacity: int
     min_age: int | None = None
     max_age: int | None = None
-
-    @model_validator(mode='after')
-    def validate_name(self):
-        if not(self.name and self.latitude and self.longitude and self.capacity):
-            raise ValueError('Не все поля заполнены')
-        return self
     
     @model_validator(mode='after')
     def validate_ages(self):
@@ -43,9 +49,15 @@ class EventPostRequest(BaseModel):
         return self
     
     @model_validator(mode='after')
-    def validate_future_date(self):
+    def validate_datetime(self):
         if self.datetime.replace(tzinfo=None) < datetime.now():
             raise ValueError('Нельзя создать событие в прошлом')
+        if self.datetime.hour >= CURFEW_BEGIN or self.datetime.hour < CURFEW_END:
+            raise ValueError('Нельзя создавать события в период 23:00-05:00')
         return self
     
-    # Add a validator: event mustn't be at 11:00 PM - 05:00 AM
+    @model_validator(mode="after")
+    def validate_capacity(self):
+        if self.capacity < 1 or self.capacity > CAPACITY_LIMIT:
+            raise ValueError('Некорректное количество человек')
+        return self

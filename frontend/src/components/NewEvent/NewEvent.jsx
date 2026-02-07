@@ -25,12 +25,13 @@ const NewEventCard = ({position}) => {
             min_age: inputs.minAge ? parseInt(inputs.minAge) : null,
             max_age: inputs.maxAge ? parseInt(inputs.maxAge) : null
         };
-
+        const time = new Date(finalData.datetime);
+        const hour = time.getHours();
         if (!(finalData.name && finalData.datetime && finalData.capacity)) {
-            console.log(finalData);
             alert("Введите все данные");
+        } else if (hour >= 23 || hour < 5) {
+            alert("Нельзя создавать события в это время");
         } else {
-            console.log("Отправка данных:", finalData);
             await createEvent(finalData);
             alert("Событие создано!");
         }
