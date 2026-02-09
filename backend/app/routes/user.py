@@ -18,7 +18,7 @@ from app.utils.security import (
 
 COOKIE_SETTINGS = {
     "key": "refresh",
-    "path": "/api/v1/auth",
+    "path": "/api/auth",
     "httponly": True,
     "samesite": "lax",
     # "secure": True, # prod

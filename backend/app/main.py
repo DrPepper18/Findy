@@ -35,12 +35,13 @@ async def lifespan(app: FastAPI):
         pass
 
 
-app = FastAPI(root_path='/api/v1', lifespan=lifespan)
+app = FastAPI(root_path="/api", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://localhost:5173"
+        "https://localhost:5173",
+        "http://192.168.31.182:5173"
     ],
     allow_credentials=True,
     allow_methods=["*"],
