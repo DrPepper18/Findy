@@ -1,8 +1,7 @@
 .reg-screen {
-    position: absolute;
-    left: 40%;
-    top: 30%;
-    width: 20%;
+    margin-top: 30vh; 
+    margin-inline: auto; 
+    width: 300px;
     border: 1px black solid;
     border-radius: 20px;
     padding: 10px;

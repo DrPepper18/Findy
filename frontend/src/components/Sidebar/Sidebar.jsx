@@ -65,7 +65,7 @@ const Sidebar = () => {
                     <input
                         className="button button--to-go"
                         type="button"
-                        value="Сохранить изменения"
+                        value="Сохранить"
                         onClick={handleEdit}
                     />
                 </div>

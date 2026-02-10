@@ -4,17 +4,23 @@
     border-left: 1px black solid;
     border-right: 1px black solid;
     margin: 0;
-    padding: 10px;
     box-sizing: border-box;
     overflow-y: auto;
 }
 .sidebar--open { width: 35vw; }
-.sidebar--closed { width: 4vw; }
+.sidebar--closed { width: fit-content; }
 .sidebar--closed > .sidebar__content { display: none; }
 .sidebar__content > .button { width: 97%; }
 .sidebar__content > .content-block { margin-bottom: 20px; }
-footer { 
-    position:absolute; 
-    bottom:0; 
+footer {
+    position: absolute; 
+    bottom: 0; 
 }
 li { margin: 5px; }
+
+@media (max-width: 500px) {
+    .sidebar--open { width: 250vw; }
+    .sidebar__content { padding-left: 10px; }
+    li { font-size: 10px; }
+    ul { padding-left: 5vw; }
+}
