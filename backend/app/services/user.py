@@ -3,7 +3,7 @@ import sqlalchemy as db
 from sqlalchemy.exc import IntegrityError
 from app.models.models import User, Booking
 from app.models.database import AsyncSession
-from app.utils.security import create_jwt_token, create_password_hash, is_password_correct
+from app.utils.security import create_password_hash, is_password_correct
 from app.schemas import RegisterRequest, LoginRequest, EditUserInfoRequest
 
 

@@ -54,7 +54,7 @@ async def override_db(db_engine):
     yield
     app.dependency_overrides.clear()
 
-# 5. Клиент
+
 @pytest_asyncio.fixture(scope="function")
 async def client():
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
