@@ -37,15 +37,15 @@ users = [
 ])
 @pytest.mark.asyncio
 async def test_auth_register(client: AsyncClient, user, status_code):
-    response = await client.post('/api/v1/auth/register', json=user)
+    response = await client.post('/api/auth/register', json=user)
     assert response.status_code == status_code
 
 
 @pytest.mark.asyncio
 async def test_auth_register_duplicate(client: AsyncClient):
     user = users[3]
-    await client.post('/api/v1/auth/register', json=user)
-    response = await client.post('/api/v1/auth/register', json=user)
+    await client.post('/api/auth/register', json=user)
+    response = await client.post('/api/auth/register', json=user)
     assert response.status_code == 409
 
 
@@ -62,7 +62,7 @@ async def test_auth_register_duplicate(client: AsyncClient):
 @pytest.mark.asyncio
 async def test_auth_login(client: AsyncClient, user, status_code):
     if status_code in [401, 200]:
-        await client.post('/api/v1/auth/register', json={
+        await client.post('/api/auth/register', json={
             "email": user["email"], 
             "password": user["password"],
             "name": "TestUser", "birthdate": calculate_birthdate(20).isoformat()
@@ -70,7 +70,7 @@ async def test_auth_login(client: AsyncClient, user, status_code):
 
     login_password = user.get("attempt", user["password"])
     
-    response = await client.post('/api/v1/auth/login', json={
+    response = await client.post('/api/auth/login', json={
         "email": user["email"],
         "password": login_password
     })
@@ -86,14 +86,14 @@ async def test_tokens_refresh(client: AsyncClient):
         "name": "TestUser", 
         "birthdate": calculate_birthdate(20).isoformat()
     }
-    response = await client.post('/api/v1/auth/register', json=user)
+    response = await client.post('/api/auth/register', json=user)
     refresh_token = response.cookies.get("refresh")
     access_token = response.json()["token"]
     assert refresh_token
     assert access_token
 
     client.cookies.set("refresh", refresh_token)
-    response = await client.get('/api/v1/auth/refresh')
+    response = await client.get('/api/auth/refresh')
     new_refresh_token = response.cookies.get("refresh")
     new_access_token = response.json()["token"]
     assert new_refresh_token
@@ -105,10 +105,10 @@ async def test_tokens_refresh(client: AsyncClient):
     # But OK i think nevermind rn.
 
     client.cookies.set("refresh", new_refresh_token)
-    response = await client.get('/api/v1/auth/', headers={'Authorization': f"Bearer {new_access_token}"})
+    response = await client.get('/api/auth/', headers={'Authorization': f"Bearer {new_access_token}"})
     user_data = response.json()
     assert user_data["name"] == user["name"]
     
     client.cookies.clear()
-    response = await client.get('/api/v1/auth/refresh')
+    response = await client.get('/api/auth/refresh')
     assert response.status_code == 401

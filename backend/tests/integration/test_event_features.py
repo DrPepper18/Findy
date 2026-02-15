@@ -17,7 +17,7 @@ async def test_event_create(client: AsyncClient, name: str, datetime: str, min_a
         "name": "Owner", 
         "birthdate": calculate_birthdate(30).isoformat()
     }
-    response = await client.post('/api/v1/auth/register', json=user)
+    response = await client.post('/api/auth/register', json=user)
     token = response.json()["token"]
 
     event = {
@@ -29,7 +29,7 @@ async def test_event_create(client: AsyncClient, name: str, datetime: str, min_a
         "max_age": max_age,
         "capacity": 1
     }
-    response = await client.post('/api/v1/event/',
+    response = await client.post('/api/event/',
                                     headers={"Authorization": f"Bearer {token}"}, 
                                     json=event
     )
@@ -47,7 +47,7 @@ async def test_event_join(client: AsyncClient):
     tokens = list()
     
     for user in users:
-        response = await client.post('/api/v1/auth/register', json=user)
+        response = await client.post('/api/auth/register', json=user)
         tokens.append(response.json()["token"])
 
     event = {
@@ -59,7 +59,7 @@ async def test_event_join(client: AsyncClient):
         "max_age": None,
         "capacity": 1
     }
-    response = await client.post('/api/v1/event/',
+    response = await client.post('/api/event/',
                                     headers={"Authorization": f"Bearer {tokens[0]}"}, 
                                     json=event
     )
@@ -72,5 +72,5 @@ async def test_event_join(client: AsyncClient):
     ]
 
     for param in parameters:  
-        response = await client.post(f'/api/v1/book/{event_id}', headers={"Authorization": f"Bearer {param["token"]}"})
+        response = await client.post(f'/api/book/{event_id}', headers={"Authorization": f"Bearer {param["token"]}"})
         assert response.status_code == param["status_code"]

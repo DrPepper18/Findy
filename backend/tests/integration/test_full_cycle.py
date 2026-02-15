@@ -16,11 +16,11 @@ async def test_full_cycle(client: AsyncClient):
     
     for user in users:
         # Registration
-        response = await client.post('/api/v1/auth/register', json=user)
+        response = await client.post('/api/auth/register', json=user)
         assert response.status_code == 201
 
         # Login
-        response = await client.post('/api/v1/auth/login', json={
+        response = await client.post('/api/auth/login', json={
             "email": user["email"],
             "password": user["password"]
         })
@@ -39,7 +39,7 @@ async def test_full_cycle(client: AsyncClient):
         "max_age": None,
         "capacity": 1
     }
-    response = await client.post('/api/v1/event/',
+    response = await client.post('/api/event/',
                                     headers={"Authorization": f"Bearer {tokens[0]}"}, 
                                     json=event
     )
@@ -49,9 +49,9 @@ async def test_full_cycle(client: AsyncClient):
     
 
     # Join the event (failed: too young)
-    response = await client.post(f'/api/v1/book/{event_id}', headers={"Authorization": f"Bearer {tokens[2]}"})
+    response = await client.post(f'/api/book/{event_id}', headers={"Authorization": f"Bearer {tokens[2]}"})
     assert response.status_code == 403
 
     # Check participation (expect: false)
-    response = await client.get(f'/api/v1/book/{event_id}', headers={"Authorization": f"Bearer {tokens[2]}"})
+    response = await client.get(f'/api/book/{event_id}', headers={"Authorization": f"Bearer {tokens[2]}"})
     assert not response.json()["joined"]
