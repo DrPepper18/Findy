@@ -7,18 +7,14 @@ import './EventCard.css'
 const EventCard = ({event}) => {
     const [isJoined, setIsJoined] = useState(false);
 
-    useEffect(() => {
-        const checkStatus = async () => {
-            try {
-                const joined = await checkEventJoinStatus(event.id);
-                setIsJoined(joined);
-            } catch (err) {
-                console.error("Ошибка проверки статуса:", err);
-            }
-        };
-
-        checkStatus();
-    }, [event.id]);
+    const checkStatus = async () => {
+        try {
+            const joined = await checkEventJoinStatus(event.id);
+            setIsJoined(joined);
+        } catch (err) {
+            console.error("Ошибка проверки статуса:", err);
+        }
+    };
 
     const handleJoin = async () => {
         try {
@@ -56,7 +52,11 @@ const EventCard = ({event}) => {
     const isFull = event.participants_count >= event.capacity;
 
     return (
-        <Popup>
+        <Popup
+            eventHandlers={{
+                add: () => {checkStatus()}
+            }}
+        >
             <h3>{event.name}</h3>
             <p>📅 {new Date(event.datetime).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</p>
             <p>
