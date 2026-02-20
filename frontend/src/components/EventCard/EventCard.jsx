@@ -82,7 +82,7 @@ const EventCard = ({event}) => {
                         alert("Скопировано!");
                     }}
                 >
-                    {shareUrl.replace('http://', '').replace('https://', '')}
+                    {shareUrl}
                 </a>
             </div>
         </Popup>
