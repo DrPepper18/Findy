@@ -1,0 +1,63 @@
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+jobs:
+  integration:
+    name: Autotests
+    runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: dev
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_HOST: localhost
+      DB_NAME: nighdee
+      DB_NAME_TEST: nighdee_test
+      SECRET_TOKEN: test-token-1
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: nighdee_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: install python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - name: install dependencies
+        run: pip install -r backend/requirements.txt
+      - name: run tests
+        run: |
+          pytest backend/tests
+
+  deployment:
+    needs: integration
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+    - name: pull and reboot
+      uses: appleboy/ssh-action@v1
+      with:
+        username: ${{ secrets.USERNAME }}
+        host: ${{ secrets.HOST }}
+        key: ${{ secrets.KEY }}
+        script: |
+          cd ~/Nighdee
+          git pull origin main
+          sudo docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+          sudo docker image prune -f
+      
