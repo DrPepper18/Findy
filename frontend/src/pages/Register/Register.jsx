@@ -43,7 +43,7 @@ const RegScreen = () => {
             await registerUser(user);
             window.location.href = '/';
         } catch (error) {
-            console.error('Error:', error);
+            alert(error.response.data.detail || "Произошла ошибка");
         }
     };
 

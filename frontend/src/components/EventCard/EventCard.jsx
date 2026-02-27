@@ -50,7 +50,13 @@ const EventCard = ({event}) => {
     const shareUrl = `${window.location.origin}/?id=${event.id}`;
     const buttonStyle = `button button--${isJoined ? 'negative' : 'to-go'}`;
     const isFull = event.participants_count >= event.capacity;
-
+    const dateOptions = {
+        day: 'numeric', 
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit', 
+        minute: '2-digit'
+    };
     return (
         <Popup
             eventHandlers={{
@@ -58,7 +64,7 @@ const EventCard = ({event}) => {
             }}
         >
             <h3>{event.name}</h3>
-            <p>📅 {new Date(event.datetime).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</p>
+            <p>📅 {new Date(event.datetime).toLocaleString("ru-RU", dateOptions)}</p>
             <p>
                 👤 {ageLabel}{ageLabel && '. '}
                 {isFull ? "Мест нет" : "Осталось мест: "}{isFull ? "" : event.capacity - event.participants_count}

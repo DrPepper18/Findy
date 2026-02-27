@@ -53,7 +53,7 @@ async def add_new_event(data: EventPostRequest, session: AsyncSession) -> int:
 
 async def delete_expired_events(session: AsyncSession) -> None:
     delete_records_query = db.delete(Booking).where(
-        Booking.Event.in_(db.select(Event.id).where(Event.datetime < datetime.now()))
+        Booking.event_id.in_(db.select(Event.id).where(Event.datetime < datetime.now()))
     )
     delete_events_query = db.delete(Event).where(Event.datetime < datetime.now())
     await session.execute(delete_records_query)
