@@ -3,6 +3,7 @@ services:
     environment:
       ENVIRONMENT: prod
     command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    restart: always
   
   frontend:
     environment:
@@ -18,3 +19,4 @@ services:
       - ./frontend/dist:/usr/share/nginx/html:ro
     ports:
       - "80:80"
+    restart: always
